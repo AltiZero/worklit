@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Project {
+  id           String           @id @default(uuid()) @db.Uuid
+  userId       String           @db.Uuid
+  title        String
+  clientName   String
+  clientEmail  String
+  status       ProjectStatus    @default(DRAFT)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  scopeItems   ScopeItem[]
+  changelog    ChangelogEntry[]
+  clientTokens ClientToken[]
+
+  @@index([userId])
+  @@map("projects")
+}
+
+model ScopeItem {
+  id          String           @id @default(uuid()) @db.Uuid
+  projectId   String           @db.Uuid
+  project     Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  price       Decimal          @db.Decimal(10, 2)
+  status      ScopeItemStatus  @default(PENDING)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  changelog   ChangelogEntry[]
+
+  @@index([projectId])
+  @@map("scope_items")
+}
+
+model ChangelogEntry {
+  id          String     @id @default(uuid()) @db.Uuid
+  projectId   String     @db.Uuid
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  scopeItemId String?    @db.Uuid
+  scopeItem   ScopeItem? @relation(fields: [scopeItemId], references: [id], onDelete: Cascade)
+  action      String
+  oldStatus   String?
+  newStatus   String?
+  actor       ActorType
+  actorName   String?
+  note        String?
+  createdAt   DateTime   @default(now())
+
+  @@index([projectId])
+  @@index([scopeItemId])
+  @@map("changelog")
+}
+
+model ClientToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  projectId String    @db.Uuid
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  token     String    @unique @default(uuid()) @db.Uuid
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([projectId])
+  @@index([token])
+  @@map("client_tokens")
+}
+
+enum ProjectStatus {
+  DRAFT
+  PENDING_REVIEW
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum ScopeItemStatus {
+  PENDING
+  APPROVED
+  DEFERRED
+  REJECTED
+}
+
+enum ActorType {
+  FREELANCER
+  CLIENT
+}

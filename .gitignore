@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# prisma — local SQLite test artifacts (real schema lives in prisma/schema.prisma)
+/prisma/migrations/dev.db*
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
