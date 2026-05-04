@@ -2,6 +2,7 @@
 
 import { CSSProperties, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
+import { submitWaitlistSignup } from "@/app/actions/waitlist";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -39,6 +40,8 @@ export function WaitlistForm() {
   const [fieldOfWork, setFieldOfWork] = useState("");
   const [biggestPain, setBiggestPain] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const transitionTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activeInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -88,8 +91,31 @@ export function WaitlistForm() {
     }, 170);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const saveSignup = async (data: { fieldOfWork?: string; biggestPain?: string }) => {
+    setIsSubmitting(true);
+    setSubmitError("");
+
+    const result = await submitWaitlistSignup({
+      email,
+      ...data,
+    });
+
+    setIsSubmitting(false);
+
+    if (!result.ok) {
+      setSubmitError(result.message);
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
 
     if (step === 0) {
       if (!isValidEmail(email.trim())) {
@@ -98,25 +124,44 @@ export function WaitlistForm() {
       }
 
       setEmailError("");
+      const saved = await saveSignup({});
+
+      if (!saved) {
+        return;
+      }
+
       changeStep(1, "forward");
       return;
     }
 
     if (step === 1) {
+      const saved = await saveSignup({ fieldOfWork });
+
+      if (!saved) {
+        return;
+      }
+
       changeStep(2, "forward");
       return;
     }
 
     if (step === 2) {
+      const saved = await saveSignup({ fieldOfWork, biggestPain });
+
+      if (!saved) {
+        return;
+      }
+
       changeStep(3, "forward");
     }
   };
 
   const goBack = () => {
-    if (step === 0 || step === 3) {
+    if (step === 0 || step === 3 || isSubmitting) {
       return;
     }
 
+    setSubmitError("");
     changeStep((step - 1) as Step, "backward");
   };
 
@@ -217,15 +262,18 @@ export function WaitlistForm() {
                     if (emailError) {
                       setEmailError("");
                     }
+                    if (submitError) {
+                      setSubmitError("");
+                    }
                   }}
                 />
                 <div className="min-h-[18px] text-xs leading-[1.5] text-[var(--text-soft)]">
-                  {emailError || "No credit card. No spam."}
+                  {emailError || submitError || "No credit card. No spam."}
                 </div>
               </div>
 
-              <Button className={cn("w-full", primaryButtonClassName)} type="submit">
-                Continue
+              <Button className={cn("w-full", primaryButtonClassName)} disabled={isSubmitting} type="submit">
+                {isSubmitting ? "Saving..." : "Continue"}
               </Button>
             </form>
           ) : null}
@@ -247,17 +295,24 @@ export function WaitlistForm() {
                   placeholder="Brand designer, web developer..."
                   ref={activeInputRef}
                   value={fieldOfWork}
-                  onChange={(event) => setFieldOfWork(event.target.value)}
+                  onChange={(event) => {
+                    setFieldOfWork(event.target.value);
+                    if (submitError) {
+                      setSubmitError("");
+                    }
+                  }}
                 />
-                <div className="min-h-[18px] text-xs leading-[1.5] text-[var(--text-soft)]">Optional, but useful for early access.</div>
+                <div className="min-h-[18px] text-xs leading-[1.5] text-[var(--text-soft)]">
+                  {submitError || "Optional, but useful for early access."}
+                </div>
               </div>
 
               <div className="flex items-center justify-between gap-3 max-[600px]:flex-col-reverse max-[600px]:items-stretch">
-                <Button className={ghostButtonClassName} type="button" variant="ghost" onClick={goBack}>
+                <Button className={ghostButtonClassName} disabled={isSubmitting} type="button" variant="ghost" onClick={goBack}>
                   Back
                 </Button>
-                <Button className={primaryButtonClassName} type="submit">
-                  Continue
+                <Button className={primaryButtonClassName} disabled={isSubmitting} type="submit">
+                  {isSubmitting ? "Saving..." : "Continue"}
                 </Button>
               </div>
             </form>
@@ -279,17 +334,24 @@ export function WaitlistForm() {
                   placeholder="Scope creep, approvals, unclear feedback..."
                   ref={activeInputRef}
                   value={biggestPain}
-                  onChange={(event) => setBiggestPain(event.target.value)}
+                  onChange={(event) => {
+                    setBiggestPain(event.target.value);
+                    if (submitError) {
+                      setSubmitError("");
+                    }
+                  }}
                 />
-                <div className="min-h-[18px] text-xs leading-[1.5] text-[var(--text-soft)]">One short phrase is enough.</div>
+                <div className="min-h-[18px] text-xs leading-[1.5] text-[var(--text-soft)]">
+                  {submitError || "One short phrase is enough."}
+                </div>
               </div>
 
               <div className="flex items-center justify-between gap-3 max-[600px]:flex-col-reverse max-[600px]:items-stretch">
-                <Button className={ghostButtonClassName} type="button" variant="ghost" onClick={goBack}>
+                <Button className={ghostButtonClassName} disabled={isSubmitting} type="button" variant="ghost" onClick={goBack}>
                   Back
                 </Button>
-                <Button className={primaryButtonClassName} type="submit">
-                  Join the waitlist
+                <Button className={primaryButtonClassName} disabled={isSubmitting} type="submit">
+                  {isSubmitting ? "Joining..." : "Join the waitlist"}
                 </Button>
               </div>
             </form>
