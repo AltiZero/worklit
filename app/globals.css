@@ -683,44 +683,52 @@ footer {
 @keyframes waitlistEnterForward {
   from {
     opacity: 0;
-    transform: translateX(12px) translateY(4px);
+    filter: blur(5px);
+    transform: translate3d(16px, 0, 0);
   }
   to {
     opacity: 1;
-    transform: translateX(0) translateY(0);
+    filter: blur(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes waitlistEnterBackward {
   from {
     opacity: 0;
-    transform: translateX(-12px) translateY(4px);
+    filter: blur(5px);
+    transform: translate3d(-16px, 0, 0);
   }
   to {
     opacity: 1;
-    transform: translateX(0) translateY(0);
+    filter: blur(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes waitlistLeaveForward {
   from {
     opacity: 1;
-    transform: translateX(0) translateY(0);
+    filter: blur(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
     opacity: 0;
-    transform: translateX(-8px) translateY(-2px);
+    filter: blur(4px);
+    transform: translate3d(-12px, 0, 0);
   }
 }
 
 @keyframes waitlistLeaveBackward {
   from {
     opacity: 1;
-    transform: translateX(0) translateY(0);
+    filter: blur(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
     opacity: 0;
-    transform: translateX(8px) translateY(-2px);
+    filter: blur(4px);
+    transform: translate3d(12px, 0, 0);
   }
 }
 

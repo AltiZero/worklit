@@ -67,7 +67,7 @@ export function WaitlistForm() {
     }
 
     const focusTimeout = setTimeout(() => {
-      activeInputRef.current?.focus();
+      activeInputRef.current?.focus({ preventScroll: true });
     }, 120);
 
     return () => clearTimeout(focusTimeout);
@@ -192,13 +192,13 @@ export function WaitlistForm() {
         </div>
       ) : null}
 
-      <div className={cn("relative z-10 grid", step === 3 ? "h-full place-items-center" : "h-[222px] items-stretch max-[600px]:h-[230px]")}>
-        <div className={cn("will-change-[opacity,transform]", transitionState === "leaving" ? "pointer-events-none" : undefined, panelAnimation)}>
+      <div className={cn("relative z-10 w-full", step === 3 ? "h-full" : "h-[222px] max-[600px]:h-[230px]")}>
+        <div className={cn("absolute inset-0 will-change-[opacity,transform,filter]", transitionState === "leaving" ? "pointer-events-none" : undefined, panelAnimation)}>
           {step === 0 ? (
             <form className="grid h-[222px] grid-rows-[72px_auto_46px] gap-4 max-[600px]:h-[230px]" onSubmit={handleSubmit}>
               <div className="flex min-h-[72px] flex-col gap-2">
                 <div className="text-[11px] font-semibold tracking-[0.1em] text-[var(--text-soft)] uppercase">Early access</div>
-                <div className="max-w-[330px] [font-family:var(--font-serif)] text-2xl leading-[1.15] tracking-[-0.02em] text-[var(--text)]">
+                <div className="max-w-[330px] [font-family:var(--font-serif)] text-[32px] leading-[1.08] tracking-[-0.02em] text-[var(--text)]">
                   Start with your email.
                 </div>
               </div>
@@ -296,7 +296,7 @@ export function WaitlistForm() {
           ) : null}
 
           {step === 3 ? (
-            <div className="flex h-full flex-col items-center justify-center gap-3 text-center animate-[successContentPop_700ms_cubic-bezier(0.16,1,0.3,1)_260ms_both]">
+            <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-center animate-[successContentPop_700ms_cubic-bezier(0.16,1,0.3,1)_260ms_both]">
               <div className="flex size-16 items-center justify-center rounded-full border border-white/30 bg-[var(--bg-card)] text-3xl font-semibold text-[var(--green)] shadow-[0_8px_22px_oklch(22%_0.014_60_/_0.12)]">
                 ✓
               </div>
