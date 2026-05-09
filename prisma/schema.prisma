@@ -72,6 +72,21 @@ model ClientToken {
   @@map("client_tokens")
 }
 
+model WaitlistSignup {
+  id           String         @id @default(uuid()) @db.Uuid
+  email        String         @unique
+  name         String?
+  fieldOfWork  String?
+  biggestPain  String?
+  status       WaitlistStatus @default(PENDING)
+  source       String         @default("landing-page")
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([status])
+  @@map("waitlist_signups")
+}
+
 enum ProjectStatus {
   DRAFT
   PENDING_REVIEW
@@ -90,4 +105,11 @@ enum ScopeItemStatus {
 enum ActorType {
   FREELANCER
   CLIENT
+}
+
+enum WaitlistStatus {
+  PENDING
+  INVITED
+  ACCEPTED
+  ARCHIVED
 }
