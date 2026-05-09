@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -11,14 +11,42 @@ const links = [
   { href: "#pricing", label: "Pricing" },
 ];
 
+const SHOW_THRESHOLD = 80;
+
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  const handleScroll = useCallback(() => {
+    const current = window.scrollY;
+
+    if (current < SHOW_THRESHOLD) {
+      setVisible(true);
+    } else if (current > lastScrollY.current + 8) {
+      setVisible(false);
+    } else if (current < lastScrollY.current - 8) {
+      setVisible(true);
+    }
+
+    lastScrollY.current = current;
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   const close = () => setOpen(false);
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-12 h-16 bg-[oklch(98%_0.006_70_/_0.9)] backdrop-blur-lg backdrop-saturate-[140%] border-b border-border max-[960px]:px-6">
+      <nav
+        className={cn(
+          "fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-12 h-16 bg-[oklch(98%_0.006_70_/_0.75)] backdrop-blur-xl backdrop-saturate-[140%] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-[960px]:px-6",
+          visible ? "translate-y-0" : "-translate-y-full",
+        )}
+      >
         <a href="#" className="flex items-center gap-2 font-[family-name:var(--font-sans)] font-semibold text-[17px] text-text no-underline tracking-[-0.3px]">
           <div className="w-[26px] h-[26px] rounded-[7px] bg-green flex items-center justify-center">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
