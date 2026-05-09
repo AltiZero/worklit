@@ -114,16 +114,18 @@ p { text-wrap: pretty; }
   100% { opacity: 0; transform: translate(calc(-50% + var(--confetti-x)), calc(-50% + var(--confetti-y))) scale(1) rotate(var(--confetti-rotate)); }
 }
 
-/* ── PAGE-LOAD STAGGER (in layer so Tailwind utilities can override) ── */
+/* ── PAGE-LOAD STAGGER ── */
+
+.animate-in { animation: fadeUp 400ms ease-out forwards; opacity: 0; }
+.delay-1 { animation-delay: 0ms; }
+.delay-2 { animation-delay: 60ms; }
+.delay-3 { animation-delay: 120ms; }
+.delay-4 { animation-delay: 180ms; }
+.delay-5 { animation-delay: 240ms; }
+
+/* ── SCROLL REVEAL (in layer so Tailwind utilities can override transitions) ── */
 
 @layer base {
-  .animate-in { animation: fadeUp 400ms ease-out forwards; opacity: 0; }
-  .delay-1 { animation-delay: 0ms; }
-  .delay-2 { animation-delay: 60ms; }
-  .delay-3 { animation-delay: 120ms; }
-  .delay-4 { animation-delay: 180ms; }
-  .delay-5 { animation-delay: 240ms; }
-
   .reveal { opacity: 0; transform: translateY(24px); transition: opacity 400ms ease-out, transform 400ms ease-out; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 }
