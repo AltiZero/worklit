@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/supabase/session";
 import { ArrowIcon, BellIcon, PlusIcon, SearchIcon, UpIcon, DownIcon, CheckIcon } from "@/components/dashboard/icons";
 
 const KPIS = [
@@ -7,14 +9,6 @@ const KPIS = [
   { label: "Outstanding", value: "$4,250", delta: -8.2, sub: "3 invoices unpaid", invert: true },
   { label: "Pending approval", value: "5", delta: +2, sub: "across 3 projects", isCount: true },
   { label: "Avg time to approval", value: "1.8d", delta: -0.4, sub: "down from 2.2d", isCount: true, invert: true },
-];
-
-const PROJECTS = [
-  { name: "Linear — Brand refresh", client: "Linear", status: "Active", progress: 64, due: "Nov 24", amount: 18400 },
-  { name: "Notion — Onboarding flow", client: "Notion", status: "Awaiting", progress: 42, due: "Dec 02", amount: 12000 },
-  { name: "Vercel — Landing rev 2", client: "Vercel", status: "Active", progress: 78, due: "Nov 18", amount: 9600 },
-  { name: "Raycast — Empty states", client: "Raycast", status: "Active", progress: 30, due: "Dec 10", amount: 4800 },
-  { name: "Stripe — Docs illustrations", client: "Stripe", status: "Draft", progress: 12, due: "Dec 22", amount: 14200 },
 ];
 
 const INVOICES = [
@@ -38,11 +32,29 @@ function DeltaBadge({ delta, isCount, invert }: { delta: number; isCount?: boole
 }
 
 function StatusDot({ status }: { status: string }) {
-  const color = status === "Active" ? "var(--green)" : status === "Awaiting" ? "var(--text-soft)" : "var(--text-soft)";
+  const color = status === "ACTIVE" ? "var(--green)" : status === "PENDING_REVIEW" ? "var(--text-soft)" : "var(--text-soft)";
   return <span className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: color }} />;
 }
 
-export default function DashboardPage() {
+function statusLabel(status: string) {
+  switch (status) {
+    case "ACTIVE": return "Active";
+    case "PENDING_REVIEW": return "Awaiting";
+    case "DRAFT": return "Draft";
+    case "COMPLETED": return "Done";
+    default: return status;
+  }
+}
+
+export default async function DashboardPage() {
+  const user = await requireAuth();
+
+  const projects = await prisma.project.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+  });
+
   return (
     <>
       {/* Header */}
@@ -67,7 +79,7 @@ export default function DashboardPage() {
             <span className="absolute top-[7px] right-[7px] w-[7px] h-[7px] rounded-full bg-green border-2 border-bg-card" />
           </button>
           <div className="w-7 h-7 rounded-full bg-green-light text-green-dark flex items-center justify-center text-[11px] font-semibold tracking-[0.02em]">
-            AT
+            {user.email?.charAt(0).toUpperCase() ?? "?"}
           </div>
         </div>
       </header>
@@ -144,8 +156,8 @@ export default function DashboardPage() {
               {["Approvals", "Activity"].map((label) => (
                 <button key={label} className={`py-1.5 px-3 rounded-full font-medium text-xs cursor-pointer inline-flex items-center gap-1.5 transition-[background,color] duration-[0.15s] ${label === "Approvals" ? "bg-text text-bg" : "bg-bg-alt text-text-mid hover:text-text"}`}>
                   {label}
-                  {label === "Approvals" && <span className="text-[10px] font-semibold py-px px-1.5 rounded-full bg-[oklch(98%_0.006_70_/_0.2)]">5</span>}
-                  {label === "Activity" && <span className="text-[10px] font-semibold py-px px-1.5 rounded-full bg-green text-white">5</span>}
+                  {label === "Approvals" && <span className="text-[10px] font-semibold py-px px-1.5 rounded-full bg-[oklch(98%_0.006_70_/_0.2)]">0</span>}
+                  {label === "Activity" && <span className="text-[10px] font-semibold py-px px-1.5 rounded-full bg-green text-white">0</span>}
                 </button>
               ))}
             </div>
@@ -154,36 +166,9 @@ export default function DashboardPage() {
             </Link>
           </div>
 
-          <div className="flex flex-col flex-1">
-            {[
-              { client: "Linear", project: "Brand refresh", items: 3, amount: 4800, age: "2h", hot: true },
-              { client: "Notion", project: "Onboarding flow", items: 2, amount: 2400, age: "1d" },
-              { client: "Vercel", project: "Landing page rev 2", items: 5, amount: 6200, age: "2d" },
-              { client: "Raycast", project: "Empty states pack", items: 2, amount: 1800, age: "4d" },
-            ].map((a, i) => (
-              <div key={i} className="flex items-center gap-3 py-3.5 border-b border-border last:border-b-0 hover:bg-[oklch(98%_0.006_70_/_0.5)] transition-colors">
-                <div className="w-[22px] h-[22px] rounded-full bg-green-light text-green-dark flex items-center justify-center text-[10px] font-semibold flex-shrink-0">
-                  {a.client[0]}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[13.5px] font-medium text-text flex items-center gap-[7px]">
-                    {a.project}
-                    {a.hot && <span className="text-[9.5px] font-semibold tracking-[0.08em] uppercase py-0.5 px-1.5 rounded-full bg-green-light text-green-dark">New</span>}
-                  </div>
-                  <div className="text-[11.5px] text-text-soft mt-0.5">{a.client} · {a.items} items · {a.age}</div>
-                </div>
-                <div className="font-heading text-base text-text tracking-[-0.01em]">${a.amount.toLocaleString()}</div>
-                <div className="flex gap-1">
-                  <button className="w-[26px] h-[26px] rounded-[7px] bg-green border border-green text-white cursor-pointer flex items-center justify-center transition-all duration-[0.12s] hover:bg-green-hover hover:border-green-hover active:scale-[0.97]" aria-label="Approve">
-                    <CheckIcon size={12} />
-                  </button>
-                  <button className="w-[26px] h-[26px] rounded-[7px] bg-bg-alt border border-border text-text-mid cursor-pointer flex items-center justify-center transition-all duration-[0.12s] hover:bg-bg-card hover:text-text hover:border-text-soft" aria-label="Open">
-                    <ArrowIcon size={12} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <p className="text-[13px] text-text-soft text-center py-12">
+            No pending approvals yet. Create a project to get started.
+          </p>
         </div>
 
         {/* Projects Table */}
@@ -193,44 +178,63 @@ export default function DashboardPage() {
               <div className="text-[10.5px] font-semibold tracking-[0.1em] uppercase text-green mb-1">Active</div>
               <div className="font-heading text-[19px] tracking-[-0.01em] leading-[1.1]">Projects</div>
             </div>
-            <Link href="#" className="text-xs text-text-mid no-underline inline-flex items-center gap-1 transition-colors duration-[0.15s] hover:text-green">
-              All projects <ArrowIcon size={12} />
+            <Link href="/dashboard/projects/new" className="bg-green text-white border-none py-2 px-3.5 rounded-[var(--radius)] font-medium text-[12.5px] cursor-pointer no-underline inline-flex items-center gap-1.5 transition-[background,transform] duration-[0.15s,0.1s] hover:bg-green-hover hover:-translate-y-px active:scale-[0.97]">
+              <PlusIcon size={14} /> New scope
             </Link>
           </div>
 
-          <div className="w-full">
-            <div className="grid grid-cols-[2fr_0.8fr_1.2fr_0.6fr_0.7fr] gap-3 pb-2.5 text-[10.5px] font-semibold tracking-[0.08em] uppercase text-text-soft border-b border-border">
-              <div>Project</div>
-              <div>Status</div>
-              <div>Progress</div>
-              <div>Due</div>
-              <div className="text-right">Amount</div>
-            </div>
-            {PROJECTS.map((p, i) => (
-              <div key={i} className="grid grid-cols-[2fr_0.8fr_1.2fr_0.6fr_0.7fr] gap-3 items-center py-3 border-b border-border cursor-pointer transition-colors duration-[0.1s] hover:bg-[oklch(98%_0.006_70_/_0.6)] last:border-b-0">
-                <div className="flex items-center gap-2.5 text-[13.5px] font-medium min-w-0">
-                  <div className="w-[22px] h-[22px] rounded-full bg-green-light text-green-dark flex items-center justify-center text-[10px] font-semibold flex-shrink-0">
-                    {p.client[0]}
-                  </div>
-                  <span className="overflow-hidden text-ellipsis whitespace-nowrap">{p.name}</span>
-                </div>
-                <div>
-                  <span className="inline-flex items-center gap-1.5 text-xs text-text-mid font-medium">
-                    <StatusDot status={p.status} />
-                    {p.status}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 h-[5px] bg-bg-alt rounded-full overflow-hidden">
-                    <div className="h-full bg-green rounded-full" style={{ width: `${p.progress}%` }} />
-                  </div>
-                  <span className="text-[11.5px] text-text-mid min-w-[28px] text-right">{p.progress}%</span>
-                </div>
-                <div className="text-[12.5px] text-text-mid">{p.due}</div>
-                <div className="font-heading text-[15px] text-text text-right tracking-[-0.01em]">{fmtMoney(p.amount)}</div>
+          {projects.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-12 h-12 rounded-xl bg-green-light flex items-center justify-center mx-auto mb-5">
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+                  <rect x="3" y="2" width="10" height="12" rx="2" stroke="var(--green)" strokeWidth="1.5" />
+                  <path d="M6 6h4M6 9h4M6 12h2" stroke="var(--green)" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
               </div>
-            ))}
-          </div>
+              <div className="font-heading text-[20px] text-text mb-2 tracking-[-0.01em]">
+                No projects yet
+              </div>
+              <p className="text-[14px] text-text-mid leading-[1.6] max-w-[360px] mx-auto">
+                Create your first project to start sending scope approvals to clients.
+              </p>
+            </div>
+          ) : (
+            <div className="w-full">
+              <div className="grid grid-cols-[2fr_0.8fr_1.2fr_0.6fr_0.7fr] gap-3 pb-2.5 text-[10.5px] font-semibold tracking-[0.08em] uppercase text-text-soft border-b border-border">
+                <div>Project</div>
+                <div>Status</div>
+                <div>Progress</div>
+                <div>Due</div>
+                <div className="text-right">Amount</div>
+              </div>
+              {projects.map((p) => (
+                <Link href={`/dashboard/projects/${p.id}`} key={p.id} className="grid grid-cols-[2fr_0.8fr_1.2fr_0.6fr_0.7fr] gap-3 items-center py-3 border-b border-border cursor-pointer transition-colors duration-[0.1s] hover:bg-[oklch(98%_0.006_70_/_0.6)] last:border-b-0 no-underline">
+                  <div className="flex items-center gap-2.5 text-[13.5px] font-medium min-w-0">
+                    <div className="w-[22px] h-[22px] rounded-full bg-green-light text-green-dark flex items-center justify-center text-[10px] font-semibold flex-shrink-0">
+                      {p.clientName[0]}
+                    </div>
+                    <span className="overflow-hidden text-ellipsis whitespace-nowrap">{p.title}</span>
+                  </div>
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 text-xs text-text-mid font-medium">
+                      <StatusDot status={p.status} />
+                      {statusLabel(p.status)}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-[5px] bg-bg-alt rounded-full overflow-hidden">
+                      <div className="h-full bg-border-mid rounded-full" style={{ width: "0%" }} />
+                    </div>
+                    <span className="text-[11.5px] text-text-mid min-w-[28px] text-right">–</span>
+                  </div>
+                  <div className="text-[12.5px] text-text-soft">
+                    {new Date(p.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </div>
+                  <div className="font-heading text-[15px] text-text text-right tracking-[-0.01em]">–</div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Invoices */}
