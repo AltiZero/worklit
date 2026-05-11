@@ -3,30 +3,30 @@
 @import "shadcn/tailwind.css";
 
 :root {
-  --bg:           oklch(98%  0.006 70);
-  --bg-alt:       oklch(96%  0.008 70);
-  --bg-card:      oklch(100% 0.000 70);
-  --bg-dark:      oklch(22%  0.018 148);
+  --bg:           oklch(95%   0.008 100);
+  --bg-alt:       oklch(91%   0.012 100);
+  --bg-card:      oklch(100%  0 0);
+  --bg-dark:      oklch(20%   0.015 148);
 
-  --text:         oklch(22%  0.014 60);
-  --text-mid:     oklch(46%  0.010 65);
-  --text-soft:    oklch(64%  0.007 65);
-  --text-inv:     oklch(96%  0.006 70);
-  --text-inv-mid: oklch(72%  0.010 148);
+  --text:         oklch(20%   0.012 60);
+  --text-mid:     oklch(44%   0.008 65);
+  --text-soft:    oklch(62%   0.005 65);
+  --text-inv:     oklch(96%   0.002 100);
+  --text-inv-mid: oklch(69%   0.008 148);
 
-  --green:        oklch(48%  0.120 148);
-  --green-hover:  oklch(42%  0.120 148);
-  --green-light:  oklch(95%  0.030 148);
-  --green-mid:    oklch(88%  0.060 148);
-  --green-dark:   oklch(36%  0.110 148);
+  --green:        oklch(50%   0.130 152);
+  --green-hover:  oklch(44%   0.130 152);
+  --green-light:  oklch(94%   0.035 150);
+  --green-mid:    oklch(86%   0.065 150);
+  --green-dark:   oklch(34%   0.100 150);
 
-  --border:       oklch(90%  0.008 70);
-  --border-mid:   oklch(84%  0.008 70);
-  --border-dark:  oklch(32%  0.016 148);
+  --border:       oklch(90%   0.006 90);
+  --border-mid:   oklch(84%   0.008 90);
+  --border-dark:  oklch(30%   0.014 148);
 
-  --shadow-sm:    0 1px 4px oklch(22% 0.014 60 / 0.06);
-  --shadow-md:    0 4px 20px oklch(22% 0.014 60 / 0.08), 0 1px 4px oklch(22% 0.014 60 / 0.04);
-  --shadow-lg:    0 20px 60px oklch(22% 0.014 60 / 0.12), 0 4px 12px oklch(22% 0.014 60 / 0.06);
+  --shadow-sm:    0 1px 3px oklch(20% 0.012 60 / 0.04);
+  --shadow-md:    0 4px 14px oklch(20% 0.012 60 / 0.05), 0 1px 3px oklch(20% 0.012 60 / 0.03);
+  --shadow-lg:    0 14px 40px oklch(20% 0.012 60 / 0.08), 0 4px 10px oklch(20% 0.012 60 / 0.04);
 
   --radius:       10px;
   --radius-lg:    16px;
@@ -117,6 +117,11 @@ p { text-wrap: pretty; }
 @keyframes mockupEnter {
   from { opacity: 0; transform: translateY(8px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes navItemIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes itemEnter {

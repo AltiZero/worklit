@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-10T22:00:00.000Z",
+  "title": "Design System: Worklit",
+  "extensions": {
+    "colorMeta": {
+      "sage-green": { "role": "primary", "displayName": "Sage Green", "canonical": "oklch(50% 0.13 152)", "tonalRamp": ["oklch(20% 0.13 152)", "oklch(28% 0.13 152)", "oklch(36% 0.13 152)", "oklch(44% 0.13 152)", "oklch(50% 0.13 152)", "oklch(62% 0.13 152)", "oklch(76% 0.13 152)", "oklch(90% 0.13 152)"] },
+      "sage-green-hover": { "role": "primary", "displayName": "Sage Green Hover", "canonical": "oklch(44% 0.13 152)", "tonalRamp": ["oklch(20% 0.13 152)", "oklch(28% 0.13 152)", "oklch(36% 0.13 152)", "oklch(44% 0.13 152)", "oklch(50% 0.13 152)", "oklch(62% 0.13 152)", "oklch(76% 0.13 152)", "oklch(90% 0.13 152)"] },
+      "sage-green-light": { "role": "primary", "displayName": "Sage Green Light", "canonical": "oklch(94% 0.035 150)", "tonalRamp": ["oklch(86% 0.035 150)", "oklch(88% 0.035 150)", "oklch(90% 0.035 150)", "oklch(92% 0.035 150)", "oklch(94% 0.035 150)", "oklch(95% 0.035 150)", "oklch(96% 0.035 150)", "oklch(97% 0.035 150)"] },
+      "warm-stone": { "role": "neutral", "displayName": "Warm Stone", "canonical": "oklch(95% 0.008 100)", "tonalRamp": ["oklch(88% 0.008 100)", "oklch(90% 0.008 100)", "oklch(92% 0.008 100)", "oklch(94% 0.008 100)", "oklch(95% 0.008 100)", "oklch(96% 0.008 100)", "oklch(97% 0.008 100)", "oklch(98% 0.008 100)"] },
+      "warm-stone-card": { "role": "neutral", "displayName": "Warm Stone Card", "canonical": "oklch(100% 0 0)", "tonalRamp": ["oklch(93% 0 0)", "oklch(94% 0 0)", "oklch(95% 0 0)", "oklch(96% 0 0)", "oklch(97% 0 0)", "oklch(98% 0 0)", "oklch(99% 0 0)", "oklch(100% 0 0)"] },
+      "charcoal-text": { "role": "neutral", "displayName": "Charcoal Text", "canonical": "oklch(20% 0.012 60)", "tonalRamp": ["oklch(16% 0.012 60)", "oklch(18% 0.012 60)", "oklch(20% 0.012 60)", "oklch(28% 0.012 60)", "oklch(36% 0.012 60)", "oklch(44% 0.012 60)", "oklch(56% 0.012 60)", "oklch(68% 0.012 60)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Section headings and dashboard titles. DM Serif Display only." },
+      "body": { "displayName": "Body", "purpose": "Paragraphs, descriptions, form content. DM Sans at 15px." },
+      "label": { "displayName": "Label", "purpose": "Section eyebrows, KPI labels, table headers. 11px uppercase DM Sans semibold." }
+    },
+    "shadows": [
+      { "name": "ambient-low", "value": "0 1px 3px oklch(20% 0.012 60 / 0.04)", "purpose": "Subtle lift on button hover." },
+      { "name": "ambient-mid", "value": "0 4px 14px oklch(20% 0.012 60 / 0.05), 0 1px 3px oklch(20% 0.012 60 / 0.03)", "purpose": "Card hover, dropdown menus, popovers." },
+      { "name": "ambient-high", "value": "0 14px 40px oklch(20% 0.012 60 / 0.08), 0 4px 10px oklch(20% 0.012 60 / 0.04)", "purpose": "Modals, success states, the hero mockup window." }
+    ],
+    "motion": [
+      { "name": "ease-hover", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Hover color and shadow transitions." },
+      { "name": "ease-drawer", "value": "cubic-bezier(0.32, 0.72, 0, 1)", "purpose": "iOS-style drawer and nav reveal." },
+      { "name": "ease-entrance", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Item entrance animations. Strong ease-out for responsive feel." }
+    ],
+    "breakpoints": [
+      { "name": "mobile-nav", "value": "960px" },
+      { "name": "mobile-stack", "value": "600px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The main call-to-action. Appears once per screen. Sage green, white text, lifts on hover.",
+      "html": "<button class=\"ds-btn-primary\">Create project</button>",
+      "css": ".ds-btn-primary { background: oklch(50% 0.13 152); color: #fff; padding: 13px 26px; border: 1px solid transparent; border-radius: 10px; font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 1; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 1px 3px oklch(20% 0.012 60 / 0.04); transition: background 0.18s, transform 0.16s, box-shadow 0.18s; } .ds-btn-primary:hover { background: oklch(44% 0.13 152); transform: translateY(-1px); box-shadow: 0 4px 12px oklch(50% 0.13 152 / 0.28); } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:disabled { background: oklch(84% 0.008 90); color: oklch(62% 0.005 65); cursor: default; transform: none; } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px oklch(50% 0.13 152 / 0.12); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "The alternative action. Transparent with a stone border, charcoal-mid text.",
+      "html": "<button class=\"ds-btn-secondary\">See how it works</button>",
+      "css": ".ds-btn-secondary { background: transparent; color: oklch(44% 0.008 65); padding: 13px 22px; border: 1.5px solid oklch(84% 0.008 90); border-radius: 10px; font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; font-weight: 400; line-height: 1; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: border-color 0.18s, color 0.18s, transform 0.16s; } .ds-btn-secondary:hover { border-color: oklch(62% 0.005 65); color: oklch(20% 0.012 60); } .ds-btn-secondary:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "Text input with a warm stone border that shifts to sage green on focus.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"e.g. Q2 Website Redesign\" />",
+      "css": ".ds-input { width: 100%; padding: 13px 16px; border: 1.5px solid oklch(84% 0.008 90); border-radius: 10px; background: oklch(100% 0 0); font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.4; color: oklch(20% 0.012 60); outline: none; box-shadow: none; transition: border-color 0.18s, box-shadow 0.18s; } .ds-input::placeholder { color: oklch(62% 0.005 65); } .ds-input:focus { border-color: oklch(50% 0.13 152); box-shadow: 0 0 0 3px oklch(50% 0.13 152 / 0.10); } .ds-input:disabled { background: oklch(91% 0.012 100); color: oklch(62% 0.005 65); cursor: not-allowed; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card-default",
+      "description": "Standard container. White background, warm stone border, flat at rest, lifts on hover.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-heading\">Card heading</div><div class=\"ds-card-body\">Card content goes here.</div></div>",
+      "css": ".ds-card { background: oklch(100% 0 0); border: 1px solid oklch(90% 0.006 90); border-radius: 16px; padding: 22px; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; } .ds-card:hover { border-color: oklch(86% 0.065 150); box-shadow: 0 4px 14px oklch(20% 0.012 60 / 0.05), 0 1px 3px oklch(20% 0.012 60 / 0.03); transform: translateY(-2px); } .ds-card-heading { font-family: 'DM Serif Display', Georgia, serif; font-size: 19px; letter-spacing: -0.01em; line-height: 1.1; color: oklch(20% 0.012 60); margin-bottom: 8px; } .ds-card-body { font-family: 'DM Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.6; color: oklch(44% 0.008 65); }"
+    },
+    {
+      "name": "Status Badge — Approved",
+      "kind": "chip",
+      "refersTo": "chip-approved",
+      "description": "Displays on approved scope items. Green tint with a check icon. The only colored badge.",
+      "html": "<span class=\"ds-chip-approved\"><svg width=\"10\" height=\"10\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M3 8l3.5 3.5L13 4.5\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg> Approved</span>",
+      "css": ".ds-chip-approved { display: inline-flex; align-items: center; gap: 4px; font-family: 'DM Sans', system-ui, sans-serif; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 100px; background: oklch(94% 0.035 150); color: oklch(34% 0.1 150); border: 1px solid oklch(86% 0.065 150); }"
+    },
+    {
+      "name": "Status Badge — Neutral",
+      "kind": "chip",
+      "refersTo": "chip-neutral",
+      "description": "Displays on pending, draft, or rejected items. Warm stone grey. Never red or orange.",
+      "html": "<span class=\"ds-chip-neutral\">Pending</span>",
+      "css": ".ds-chip-neutral { display: inline-flex; align-items: center; gap: 4px; font-family: 'DM Sans', system-ui, sans-serif; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 100px; background: oklch(91% 0.012 100); color: oklch(44% 0.008 65); border: 1px solid oklch(84% 0.008 90); }"
+    },
+    {
+      "name": "Sidebar Nav Item",
+      "kind": "nav",
+      "refersTo": "nav-sidebar-item",
+      "description": "Navigation link in the 232px sidebar. Charcoal-mid at rest, sage-green-light background when active.",
+      "html": "<a class=\"ds-nav-item active\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10\"/></svg><span>Home</span></a>",
+      "css": ".ds-nav-item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; font-family: 'DM Sans', system-ui, sans-serif; font-size: 13.5px; font-weight: 400; color: oklch(44% 0.008 65); text-decoration: none; transition: background 0.12s, color 0.12s; } .ds-nav-item:hover { background: oklch(91% 0.012 100); color: oklch(20% 0.012 60); } .ds-nav-item.active { background: oklch(94% 0.035 150); color: oklch(34% 0.1 150); font-weight: 500; } .ds-nav-item svg { stroke: currentColor; flex-shrink: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Architect's Desk",
+    "overview": "Worklit's interface feels like a well-organized architect's desk — warm wood, clean blueprints, confident marks. Every element is placed with intention. There is no decoration that doesn't earn its keep. The color palette is warm stone with a single green accent that appears rarely and always carries meaning: approval, sign-off, done. This is a product surface. The design serves the workflow: define deliverables, send for approval, get paid. The interface should recede when the freelancer is in flow and assert itself only at moments of decision.",
+    "keyCharacteristics": [
+      "One accent, one meaning: green = approval",
+      "Warm stone neutrals throughout — no pure black, no pure white",
+      "Editorial serif headings paired with clean sans body",
+      "Flat at rest, subtle elevation on hover",
+      "Every interaction provides responsive feedback without performance"
+    ],
+    "rules": [
+      { "name": "The Architect's Stamp Rule", "body": "Sage green is used on ≤10% of any given screen. It appears only where the freelancer needs to take action — approve, sign, submit, create. If every card has a green element, the stamp loses its authority.", "section": "colors" },
+      { "name": "The No-Red Rule", "body": "Rejected, deferred, and neutral states use warm stone greys at reduced opacity. Never red, never orange. Green is the only color that carries emotional weight.", "section": "colors" },
+      { "name": "The One Serif Rule", "body": "DM Serif Display appears only in headings. Never in body text, never in buttons, never in form labels.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. Shadows appear only as a response to state (hover, focus, elevation). If a card has a shadow at rest, it's wrong.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use sage green sparingly — one primary button per screen, one active indicator. The rarity creates the meaning.",
+      "Do use warm stone backgrounds everywhere. Cards are white; pages are warm stone. This alone creates hierarchy.",
+      "Do pair DM Serif Display headings with DM Sans body. No other fonts.",
+      "Do provide responsive feedback — buttons scale on press, cards lift on hover, inputs glow on focus.",
+      "Do use borders for card separation at rest. Shadows are for interaction states only.",
+      "Do label every status badge with text. Color is never the sole indicator of state.",
+      "Do respect prefers-reduced-motion — collapse all animation durations to near-zero when the user requests it."
+    ],
+    "donts": [
+      "Don't use red, orange, or any secondary accent color. Green is the only meaningful signal.",
+      "Don't use pure black (#000) or pure white (#fff) anywhere. Every neutral is tinted toward warm stone.",
+      "Don't apply DM Serif Display to body text, buttons, labels, or any non-heading element.",
+      "Don't use opacity alone for disabled states. Always change the background color explicitly.",
+      "Don't animate from scale(0). Nothing in the real world appears from nothing. Start from scale(0.3) or higher.",
+      "Don't use transition: all. Specify exact properties.",
+      "Don't use cards inside cards. Nested cards are always wrong.",
+      "Don't use side-stripe borders. Rewrite with full borders, background tints, or nothing.",
+      "Don't use gradient text, glassmorphism as default, or the hero-metric template."
+    ]
+  }
+}

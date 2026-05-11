@@ -43,7 +43,7 @@ export function Nav() {
     <>
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-12 h-16 bg-[oklch(98%_0.006_70_/_0.75)] backdrop-blur-xl backdrop-saturate-[140%] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-[960px]:px-6",
+          "fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-12 h-16 bg-[oklch(95%_0.008_100_/_0.88)] backdrop-blur-xl backdrop-saturate-[140%] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-[960px]:px-6",
           visible ? "translate-y-0" : "-translate-y-full",
         )}
       >
@@ -96,7 +96,7 @@ export function Nav() {
 
       <div
         className={cn(
-          "hidden fixed top-16 left-0 right-0 z-[99] bg-bg border-b border-border px-6 pb-6 flex-col gap-1 shadow-[0_8px_24px_oklch(22%_0.014_60_/_0.08)]",
+          "hidden fixed top-16 left-0 right-0 z-[99] bg-bg border-b border-border px-6 pb-6 flex-col gap-1 shadow-[0_8px_24px_oklch(20%_0.012_60_/_0.08)]",
           "transition-[transform,opacity] duration-[0.22s] ease-[cubic-bezier(0.32,0.72,0,1)]",
           open ? "translate-y-0 opacity-100 pointer-events-auto" : "-translate-y-2 opacity-0 pointer-events-none",
           "max-[960px]:flex",
