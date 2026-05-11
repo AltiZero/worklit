@@ -11,7 +11,7 @@ export default function NewProjectPage() {
   const [state, formAction, pending] = useActionState(createProject, initialState);
 
   return (
-    <div className="max-w-[640px]">
+    <div>
       <Link
         href="/dashboard"
         className="text-[13px] text-text-mid no-underline hover:text-text transition-colors duration-150 inline-flex items-center gap-1.5 mb-8 group"

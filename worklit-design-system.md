@@ -67,11 +67,11 @@ All colours are defined in `oklch()`. The palette has two axes: a **warm stone n
 
 | Role | Family | Weights used |
 |------|--------|-------------|
-| Display / Headlines | `DM Serif Display` | 400 (regular), 400 italic |
+| Display / Headlines | `Instrument Serif` | 400 (regular), 400 italic |
 | Body / UI | `DM Sans` | 300, 400, 500, 600 |
 
 ```css
---font-serif: 'DM Serif Display', Georgia, serif;
+--font-serif: 'Instrument Serif', Georgia, serif;
 --font-sans:  'DM Sans', system-ui, sans-serif;
 ```
 
@@ -94,7 +94,7 @@ All colours are defined in `oklch()`. The palette has two axes: a **warm stone n
 | Section eyebrow | Sans | 11px | 600 | 1 | 0.10–0.12em (uppercase) |
 
 **Rules:**
-- Headlines use `DM Serif Display`. Italic `<em>` in headlines is used to highlight the key emotional phrase, coloured `var(--green)`.
+- Headlines use `Instrument Serif`. Italic `<em>` in headlines is used to highlight the key emotional phrase, coloured `var(--green)`.
 - Never use `Inter`, `Roboto`, or system-default sans-serif for UI text.
 - Section eyebrows (e.g. "How it works", "The problem") are always `11px / 600 / uppercase / 0.10–0.12em tracking` in `var(--green)` or `var(--text-inv-mid)` on dark backgrounds.
 - Minimum body text: 13px. Never smaller in any visible UI.

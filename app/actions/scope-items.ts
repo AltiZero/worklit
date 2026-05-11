@@ -27,7 +27,7 @@ export async function addScopeItem(projectId: string, _prev: ScopeItemState, for
     return { message: "Enter a valid price." };
   }
 
-  await prisma.scopeItem.create({
+  const item = await prisma.scopeItem.create({
     data: {
       projectId,
       title,
@@ -36,6 +36,17 @@ export async function addScopeItem(projectId: string, _prev: ScopeItemState, for
     },
   });
 
+  await prisma.changelogEntry.create({
+    data: {
+      projectId,
+      scopeItemId: item.id,
+      action: `added "${item.title}"`,
+      actor: "FREELANCER",
+      actorName: user.email ?? undefined,
+    },
+  });
+
   revalidatePath(`/dashboard/projects/${projectId}`);
+  revalidatePath("/dashboard");
   return {};
 }
