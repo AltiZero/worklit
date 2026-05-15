@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { cn } from "@/lib/utils";
+import { SearchPalette, type SearchProject } from "./search-palette";
 
 const crumbLabels: Record<string, string> = {
   dashboard: "Home",
@@ -17,7 +19,15 @@ const crumbLabels: Record<string, string> = {
   settings: "Settings",
 };
 
-function Breadcrumbs({ className }: { className?: string }) {
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function Breadcrumbs({
+  className,
+  projectTitles,
+}: {
+  className?: string;
+  projectTitles: Record<string, string>;
+}) {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
 
@@ -25,19 +35,27 @@ function Breadcrumbs({ className }: { className?: string }) {
     <nav className={`flex items-center gap-0 text-[13px] ${className ?? ""}`}>
       {segments.map((seg, i) => {
         const href = "/" + segments.slice(0, i + 1).join("/");
-        const label = crumbLabels[seg] ?? seg.charAt(0).toUpperCase() + seg.slice(1);
+        const prev = segments[i - 1];
+        const projectName = prev === "projects" && UUID_RE.test(seg) ? projectTitles[seg] : undefined;
+        const label =
+          projectName ??
+          crumbLabels[seg] ??
+          (UUID_RE.test(seg) ? seg.slice(0, 8) : seg.charAt(0).toUpperCase() + seg.slice(1));
         const isLast = i === segments.length - 1;
 
         return (
           <span key={href} className="flex items-center gap-0">
             {i > 0 && <span className="text-text-soft mx-1.5">/</span>}
-            {isLast ? (
-              <span className="text-text-mid font-medium">{label}</span>
-            ) : (
-              <Link href={href} className="text-text-soft no-underline hover:text-text transition-colors duration-150">
-                {label}
-              </Link>
-            )}
+            <Link
+              href={href}
+              className={cn(
+                "no-underline transition-colors duration-150",
+                isLast ? "text-text-mid font-medium hover:text-text" : "text-text-soft hover:text-text",
+              )}
+              aria-current={isLast ? "page" : undefined}
+            >
+              {label}
+            </Link>
           </span>
         );
       })}
@@ -48,10 +66,14 @@ function Breadcrumbs({ className }: { className?: string }) {
 export function AppLayoutClient({
   initials,
   email,
+  projectTitles,
+  searchProjects,
   children,
 }: {
   initials: string;
   email: string;
+  projectTitles: Record<string, string>;
+  searchProjects: SearchProject[];
   children: React.ReactNode;
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -67,30 +89,43 @@ export function AppLayoutClient({
         collapsed={collapsed}
         onToggle={() => setCollapsed((v) => !v)}
       />
-      <div className="min-w-0 flex flex-col">
-        {/* Top bar: toggle + breadcrumbs */}
-        <div className="flex items-center gap-3 h-12 px-[22px] border-b border-border bg-bg-card">
-          <button
-            onClick={() => setCollapsed((v) => !v)}
-            className="w-[36px] h-[36px] rounded-md bg-transparent border-none cursor-pointer flex items-center justify-center text-text-soft hover:bg-bg-alt hover:text-text transition-[background,color] duration-[0.1s] group flex-shrink-0"
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {collapsed ? (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="">
-                <path d="M9 18l6-6-6-6M15 18l6-6-6-6" />
-              </svg>
-            ) : (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="">
-                <path d="M15 6l-6 6 6 6M9 6l-6 6 6 6" />
-              </svg>
-            )}
-          </button>
-          <Breadcrumbs />
-        </div>
 
-        <main className="flex-1 p-[22px] flex flex-col gap-[18px]">
-          {children}
-        </main>
+      {/* Inset panel that holds the top bar + page content */}
+      <div className="min-w-0 py-3 pr-3 max-[960px]:p-0">
+        <div className="min-h-[calc(100vh-1.5rem)] bg-bg-card border border-border rounded-[var(--radius-lg)] flex flex-col overflow-hidden max-[960px]:rounded-none max-[960px]:border-x-0 max-[960px]:border-t-0 max-[960px]:min-h-0">
+          {/* Top bar: toggle + breadcrumbs (inside the panel) */}
+          <div className="flex items-center gap-0.5 h-11 p-[5px] border-b border-border flex-shrink-0">
+            <button
+              onClick={() => setCollapsed((v) => !v)}
+              className="w-[34px] h-[34px] rounded-md bg-transparent border-none cursor-pointer inline-flex items-center justify-center text-text-soft hover:bg-bg-alt hover:text-text transition-[background,color] duration-[0.1s] flex-shrink-0 max-[960px]:hidden"
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              <svg
+                width="17"
+                height="17"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="4" width="18" height="16" rx="2.5" />
+                <line x1="9" y1="4" x2="9" y2="20" />
+              </svg>
+            </button>
+            <div className="w-px h-4 bg-border max-[960px]:hidden" aria-hidden="true" />
+            <Breadcrumbs className="ml-2" projectTitles={projectTitles} />
+            <div className="ml-auto pl-2 pr-2">
+              <SearchPalette projects={searchProjects} />
+            </div>
+          </div>
+
+          <main className="flex-1 p-[28px] flex flex-col gap-[18px] min-w-0 max-[960px]:p-[22px]">
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   );
