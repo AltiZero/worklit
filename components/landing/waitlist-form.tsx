@@ -291,8 +291,8 @@ export function WaitlistForm() {
           {step === 3 ? (
             <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-center animate-[successContentPop_700ms_cubic-bezier(0.16,1,0.3,1)_260ms_both]">
               <div className="flex size-16 items-center justify-center rounded-full border border-white/30 bg-bg-card text-3xl font-semibold text-green shadow-[0_8px_22px_oklch(22%_0.014_60_/_0.12)]">✓</div>
-              <div className="max-w-[330px] font-heading text-2xl leading-[1.15] tracking-[-0.02em] text-white">You're on the list.</div>
-              <p className="max-w-[260px] text-sm leading-[1.65] text-[oklch(96%_0.006_70_/_0.82)]">We'll reach out when early access opens.</p>
+              <div className="max-w-[330px] font-heading text-2xl leading-[1.15] tracking-[-0.02em] text-white">You&apos;re on the list.</div>
+              <p className="max-w-[260px] text-sm leading-[1.65] text-[oklch(96%_0.006_70_/_0.82)]">We&apos;ll reach out when early access opens.</p>
             </div>
           ) : null}
         </div>

@@ -1,52 +1,152 @@
-import { HeroMockup } from "./mockup";
+"use client";
+
+import { useEffect, useRef } from "react";
 
 export function Hero() {
+  const heroRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const bg = bgRef.current;
+    const hero = heroRef.current;
+    if (
+      !bg ||
+      !hero ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !window.matchMedia("(min-width: 720px)").matches
+    ) {
+      return;
+    }
+
+    let ticking = false;
+    const update = () => {
+      const rect = hero.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > window.innerHeight) {
+        ticking = false;
+        return;
+      }
+      const y = Math.max(0, -rect.top);
+      bg.style.transform = `translate3d(0, ${-y * 0.14}px, 0)`;
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <div className="min-h-screen grid grid-cols-2 items-center gap-16 pt-[120px] px-20 pb-20 max-w-[1280px] mx-auto max-[960px]:grid-cols-1 max-[960px]:pt-[100px] max-[960px]:px-6 max-[960px]:pb-[60px] max-[960px]:gap-12">
-      <div className="flex flex-col gap-7">
-        <div className="animate-in delay-1">
-          <div className="inline-flex items-center gap-2 bg-green-light text-green-dark text-xs font-semibold tracking-[0.08em] uppercase py-[5px] px-3 rounded-full w-fit">
-            <div className="w-1.5 h-1.5 rounded-full bg-green animate-pulse" />
-            Now in early access
-          </div>
-        </div>
-        <h1 className="animate-in delay-2 font-heading text-[clamp(42px,4.5vw,66px)] leading-[1.08] tracking-[-0.02em] text-text max-[600px]:text-[38px]">
-          Scope creep ends
-          <br />
-          <em className="italic text-green">here.</em>
+    <header
+      ref={heroRef}
+      className="relative flex min-h-[100svh] flex-col overflow-hidden md:min-h-[100dvh] xl:max-h-[1100px]"
+    >
+      {/* Background painting */}
+      <div
+        ref={bgRef}
+        className="absolute inset-0 z-[-2]"
+        style={{
+          background: "url('/hero-painting.png') top center / cover no-repeat",
+          transformOrigin: "center top",
+          animation: "heroBgIn 1.6s cubic-bezier(.22,1,.36,1) both",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Dark scrim */}
+      <div
+        className="absolute inset-0 z-[-1]"
+        style={{
+          background: "linear-gradient(to bottom, oklch(12% 0.020 145 / 0) 0%, oklch(12% 0.020 145 / 0) 22%, oklch(12% 0.020 145 / .35) 42%, oklch(10% 0.018 145 / .72) 62%, oklch(8% 0.016 145 / .94) 100%)",
+          animation: "scrimIn 1.4s ease .25s both",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Side vignette */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[-1]"
+        style={{
+          background: "radial-gradient(120% 70% at 20% 100%, oklch(8% 0.016 145 / .55) 0%, oklch(8% 0.016 145 / 0) 60%)",
+          animation: "scrimIn 1.4s ease .25s both",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Content */}
+      <div className="relative mx-auto flex w-full max-w-[1180px] flex-1 flex-col items-start justify-end px-[22px] pt-[110px] pb-14 sm:pt-[140px] sm:pb-[72px] sm:px-10 lg:px-14 xl:pb-24">
+        {/* Tag pill */}
+        <span
+          className="mb-5 inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-black/50 px-3.5 py-2 text-xs font-medium tracking-[0.14em] text-white uppercase backdrop-blur-lg"
+          style={{ animation: "fadeUp .9s cubic-bezier(.22,1,.36,1) .45s both" }}
+        >
+          <span
+            className="size-[7px] rounded-full"
+            style={{
+              background: "var(--clay)",
+              boxShadow: "0 0 0 4px oklch(64% 0.135 48 / .22)",
+              animation: "pulseDot 2.4s ease-in-out 1.4s infinite",
+            }}
+          />
+          Now in open beta
+        </span>
+
+        <h1
+          className="max-w-[14ch] font-[family-name:var(--font-serif)] text-[clamp(44px,8.6vw,116px)] leading-[0.96] font-normal tracking-[-0.02em] text-white [text-wrap:balance]"
+          style={{
+            animation: "fadeUp .9s cubic-bezier(.22,1,.36,1) .60s both",
+          }}
+        >
+          Get paid for the work you <em className="italic" style={{ color: "var(--clay-soft)" }}>said yes to.</em>
         </h1>
-        <p className="animate-in delay-3 text-lg leading-[1.6] text-text-mid font-normal max-w-[420px]">
-          Define deliverables, prices, and get explicit client sign-off in minutes. No back-and-forth, no disputes.
+
+        <p
+          className="mt-6 max-w-[540px] text-[17px] leading-relaxed text-[oklch(86%_0.014_80)] sm:mt-7 sm:text-[19px]"
+          style={{
+            animation: "fadeUp .9s cubic-bezier(.22,1,.36,1) .78s both",
+          }}
+        >
+          Worklit turns the messy &ldquo;sounds good&rdquo; at the start of a project into a signed, line-itemed record — so scope creep
+          has nowhere quiet to hide.
         </p>
-        <div className="animate-in delay-4 flex items-center gap-3 flex-wrap">
-          <a href="#pricing" className="bg-green text-white py-[13px] px-[26px] rounded-[var(--radius)] font-sans text-[15px] font-medium border-none cursor-pointer no-underline transition-[background,transform,box-shadow] duration-[0.18s,0.16s,0.18s] inline-flex items-center gap-2 shadow-[0_1px_3px_oklch(22%_0.014_60_/_0.12)] hover:bg-green-hover hover:-translate-y-px hover:shadow-[0_4px_12px_oklch(48%_0.120_148_/_0.28)] active:scale-[0.97]">
-            Start for free
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+
+        <div
+          className="mt-8 flex flex-wrap gap-3"
+          style={{ animation: "fadeUp .9s cubic-bezier(.22,1,.36,1) .92s both" }}
+        >
+          <a
+            className="inline-flex items-center justify-center gap-2.5 rounded-full px-6 py-[15px] text-[15px] font-medium leading-none text-[oklch(15%_0.018_50)] no-underline transition-all hover:-translate-y-px bg-white hover:bg-[var(--clay)] hover:text-white"
+            href="#"
+          >
+            Start free <span className="transition-transform duration-200">→</span>
           </a>
-          <a href="#how" className="bg-transparent text-text-mid py-[13px] px-[22px] rounded-[var(--radius)] font-sans text-[15px] font-normal border-[1.5px] border-border-mid cursor-pointer no-underline transition-[border-color,color,transform] duration-[0.18s] inline-flex items-center gap-2 hover:border-text-soft hover:text-text active:scale-[0.97]">
-            See how it works
+          <a
+            className="inline-flex items-center justify-center gap-2.5 rounded-full border border-white/60 px-6 py-[15px] text-[15px] font-medium leading-none text-white no-underline transition-all hover:border-white hover:bg-white hover:text-[oklch(15%_0.018_50)]"
+            href="#product"
+          >
+            See it in action
           </a>
         </div>
-        <div className="animate-in delay-5 flex items-center gap-2.5 text-[13px] text-text-soft">
-          <div className="flex">
-            {["S", "M", "R", "A"].map((letter, index) => (
-              <div
-                key={letter}
-                className="w-[26px] h-[26px] rounded-full border-2 border-[var(--bg)] bg-bg-alt -ml-1.5 flex items-center justify-center text-[10px] font-semibold text-text-mid first:ml-0"
-                style={{ background: `oklch(${90 - index * 4}% 0.012 ${70 + index * 18})` }}
-              >
-                {letter}
-              </div>
-            ))}
-          </div>
-          <span>Trusted by 200+ freelancers</span>
+
+        <div
+          className="mt-9 flex flex-wrap items-center gap-x-[22px] gap-y-2.5 text-[13px] text-[oklch(72%_0.014_80)]"
+          style={{ animation: "fadeUp .9s cubic-bezier(.22,1,.36,1) 1.06s both" }}
+        >
+          <span>
+            <strong className="font-medium text-white">312</strong> freelancers signing this month
+          </span>
+          <span className="h-px w-[22px] bg-[oklch(72%_0.014_80)] opacity-55" />
+          <span>
+            <span className="tracking-[0.05em]" style={{ color: "var(--clay-soft)" }}>★★★★★</span>{" "}
+            4.9 on Product Hunt
+          </span>
         </div>
       </div>
-      <div className="animate-in delay-3 relative flex justify-center items-center">
-        <HeroMockup />
-      </div>
-    </div>
+    </header>
   );
 }

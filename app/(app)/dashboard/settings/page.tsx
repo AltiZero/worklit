@@ -1,124 +1,167 @@
-"use client";
+import {
+  CurrencyDollarIcon,
+  ShieldCheckIcon,
+  UserIcon,
+} from "@heroicons/react/16/solid";
 
-import { useState } from "react";
+import { logout } from "@/app/actions/auth";
+import { requireAuth } from "@/lib/supabase/session";
 
-export default function SettingsPage() {
-  const [saved, setSaved] = useState(false);
+type EyebrowIcon = React.ComponentType<{ className?: string }>;
+
+function Eyebrow({ icon: Icon, children }: { icon: EyebrowIcon; children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.14em] uppercase text-text-mid">
+      <Icon className="w-3.5 h-3.5 text-text-soft" />
+      {children}
+    </span>
+  );
+}
+
+const labelClass = "text-[12.5px] font-medium text-text mb-1.5 block";
+
+const readOnlyClass =
+  "w-full bg-bg-alt border-[1.5px] border-border-mid rounded-[var(--radius)] py-[11px] px-[14px] text-[14px] text-text-soft cursor-not-allowed";
+
+function displayMetadataValue(metadata: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const value = metadata[key];
+    if (typeof value === "string" && value.trim()) return value;
+  }
+  return "";
+}
+
+export default async function SettingsPage() {
+  const user = await requireAuth();
+  const metadata = user.user_metadata as Record<string, unknown>;
+  const email = user.email ?? "No email on account";
+  const fullName = displayMetadataValue(metadata, ["full_name", "name"]) || email.split("@")[0] || "Signed-in user";
+  const businessName = displayMetadataValue(metadata, ["business_name", "company"]);
 
   return (
-    <div>
-      <div className="mb-8">
-        <div className="text-[11px] font-semibold tracking-[0.12em] uppercase text-green mb-4">Workspace</div>
-        <h1 className="font-heading text-[32px] tracking-[-0.02em] leading-none">Settings</h1>
-      </div>
+    <div className="flex flex-col gap-7">
+      <header className="flex items-end justify-between gap-6 flex-wrap pt-1">
+        <div className="min-w-0">
+          <div className="text-[11px] font-semibold tracking-[0.14em] uppercase text-text-soft mb-2.5">
+            Account and preferences
+          </div>
+          <h1 className="font-heading text-[clamp(34px,3.4vw,46px)] tracking-[-0.025em] leading-[1.04] text-text">
+            Settings
+          </h1>
+          <p className="text-[15px] text-text-mid mt-2.5 max-w-[52ch]">
+            Review your account details and billing defaults.
+          </p>
+        </div>
+      </header>
 
-      <div className="grid grid-cols-[1fr_1fr] gap-[18px] mb-5">
-        {/* Profile */}
-        <div className="bg-bg-card border border-border rounded-[var(--radius-lg)] p-6">
-          <div className="font-heading text-[22px] tracking-[-0.01em] leading-[1.1] text-text mb-1">Profile</div>
-          <p className="text-[13px] text-text-soft mb-6">Your personal and business details.</p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section className="bg-bg-card border border-border rounded-[var(--radius-lg)] p-[28px] flex flex-col">
+          <Eyebrow icon={UserIcon}>Profile</Eyebrow>
 
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold text-text-mid uppercase tracking-[0.06em]">Full name</label>
+          <div className="mt-4">
+            <div className="font-heading text-[22px] tracking-[-0.015em] leading-[1.15] text-text">
+              Your details
+            </div>
+            <p className="text-[13px] text-text-mid mt-1">
+              How you appear on approvals.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-4 mt-6">
+            <div>
+              <label htmlFor="fullName" className={labelClass}>
+                Full name
+              </label>
+              <input id="fullName" type="text" value={fullName} readOnly className={readOnlyClass} />
+            </div>
+            <div>
+              <label htmlFor="businessName" className={labelClass}>
+                Business name
+              </label>
               <input
+                id="businessName"
                 type="text"
-                defaultValue="Alex Tran"
-                className="w-full rounded-[var(--radius)] border-[1.5px] border-border-mid bg-bg-card px-4 py-[11px] text-[14px] leading-[1.4] text-text shadow-none outline-none placeholder:text-text-soft focus-visible:border-green focus-visible:shadow-[0_0_0_3px_oklch(48%_0.120_148_/_0.10)] transition-[border-color,box-shadow] duration-[0.18s]"
+                value={businessName || "Not configured"}
+                readOnly
+                className={readOnlyClass}
               />
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold text-text-mid uppercase tracking-[0.06em]">Business name</label>
-              <input
-                type="text"
-                defaultValue="Alex Tran Design"
-                placeholder="Your freelance business name"
-                className="w-full rounded-[var(--radius)] border-[1.5px] border-border-mid bg-bg-card px-4 py-[11px] text-[14px] leading-[1.4] text-text shadow-none outline-none placeholder:text-text-soft focus-visible:border-green focus-visible:shadow-[0_0_0_3px_oklch(48%_0.120_148_/_0.10)] transition-[border-color,box-shadow] duration-[0.18s]"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold text-text-mid uppercase tracking-[0.06em]">Email</label>
-              <input
-                type="email"
-                defaultValue="alex@example.com"
-                disabled
-                className="w-full rounded-[var(--radius)] border-[1.5px] border-border-mid bg-bg-alt px-4 py-[11px] text-[14px] leading-[1.4] text-text-soft shadow-none outline-none cursor-not-allowed"
-              />
+            <div>
+              <label htmlFor="email" className={labelClass}>
+                Email
+              </label>
+              <input id="email" type="email" value={email} readOnly className={readOnlyClass} />
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Invoice defaults */}
-        <div className="bg-bg-card border border-border rounded-[var(--radius-lg)] p-6">
-          <div className="font-heading text-[22px] tracking-[-0.01em] leading-[1.1] text-text mb-1">Invoice defaults</div>
-          <p className="text-[13px] text-text-soft mb-6">Prefilled when you generate an invoice.</p>
+        <section className="bg-bg-card border border-border rounded-[var(--radius-lg)] p-[28px] flex flex-col">
+          <Eyebrow icon={CurrencyDollarIcon}>Invoice defaults</Eyebrow>
 
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold text-text-mid uppercase tracking-[0.06em]">Currency</label>
-              <select
-                defaultValue="USD"
-                className="w-full rounded-[var(--radius)] border-[1.5px] border-border-mid bg-bg-card px-4 py-[11px] text-[14px] leading-[1.4] text-text shadow-none outline-none focus-visible:border-green focus-visible:shadow-[0_0_0_3px_oklch(48%_0.120_148_/_0.10)] transition-[border-color,box-shadow] duration-[0.18s] appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22oklch(64%25%200.007%2065)%22%20stroke-width%3D%221.5%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_12px_center] bg-no-repeat pr-10"
-              >
-                <option>USD — $</option>
-                <option>EUR — €</option>
-                <option>GBP — £</option>
-                <option>CAD — C$</option>
-                <option>AUD — A$</option>
-              </select>
+          <div className="mt-4">
+            <div className="font-heading text-[22px] tracking-[-0.015em] leading-[1.15] text-text">
+              Billing preferences
+            </div>
+            <p className="text-[13px] text-text-mid mt-1">
+              Defaults will appear here once invoice generation is added.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-4 mt-6">
+            <div>
+              <label htmlFor="currency" className={labelClass}>
+                Currency
+              </label>
+              <input id="currency" type="text" value="Not configured" readOnly className={readOnlyClass} />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[12px] font-semibold text-text-mid uppercase tracking-[0.06em]">Payment terms</label>
-                <select
-                  defaultValue="net15"
-                  className="w-full rounded-[var(--radius)] border-[1.5px] border-border-mid bg-bg-card px-4 py-[11px] text-[14px] leading-[1.4] text-text shadow-none outline-none focus-visible:border-green focus-visible:shadow-[0_0_0_3px_oklch(48%_0.120_148_/_0.10)] transition-[border-color,box-shadow] duration-[0.18s] appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22oklch(64%25%200.007%2065)%22%20stroke-width%3D%221.5%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_12px_center] bg-no-repeat pr-10"
-                >
-                  <option value="net7">Net 7</option>
-                  <option value="net15">Net 15</option>
-                  <option value="net30">Net 30</option>
-                  <option value="onReceipt">Due on receipt</option>
-                </select>
+              <div>
+                <label htmlFor="terms" className={labelClass}>
+                  Payment terms
+                </label>
+                <input id="terms" type="text" value="Not configured" readOnly className={readOnlyClass} />
               </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[12px] font-semibold text-text-mid uppercase tracking-[0.06em]">Tax rate</label>
-                <div className="flex items-center gap-2 rounded-[var(--radius)] border-[1.5px] border-border-mid bg-bg-card px-4 py-[11px] focus-within:border-green focus-within:shadow-[0_0_0_3px_oklch(48%_0.120_148_/_0.10)] transition-[border-color,box-shadow] duration-[0.18s]">
-                  <input
-                    type="number"
-                    defaultValue="0"
-                    min="0"
-                    max="100"
-                    step="0.1"
-                    className="flex-1 border-none outline-none text-[14px] leading-[1.4] text-text bg-transparent"
-                  />
-                  <span className="text-[14px] text-text-soft">%</span>
-                </div>
+              <div>
+                <label htmlFor="tax" className={labelClass}>
+                  Tax rate
+                </label>
+                <input id="tax" type="text" value="Not configured" readOnly className={readOnlyClass} />
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold text-text-mid uppercase tracking-[0.06em]">Invoice prefix</label>
-              <input
-                type="text"
-                defaultValue="INV-"
-                className="w-full rounded-[var(--radius)] border-[1.5px] border-border-mid bg-bg-card px-4 py-[11px] text-[14px] leading-[1.4] text-text shadow-none outline-none focus-visible:border-green focus-visible:shadow-[0_0_0_3px_oklch(48%_0.120_148_/_0.10)] transition-[border-color,box-shadow] duration-[0.18s]"
-              />
+            <div>
+              <label htmlFor="prefix" className={labelClass}>
+                Invoice prefix
+              </label>
+              <input id="prefix" type="text" value="Not configured" readOnly className={readOnlyClass} />
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
-      {/* Save */}
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => { setSaved(true); setTimeout(() => setSaved(false), 2000); }}
-          className="min-h-[44px] rounded-[var(--radius)] border border-transparent bg-green px-6 py-[11px] text-[14px] font-medium leading-none text-white shadow-[0_1px_3px_oklch(22%_0.014_60_/_0.12)] transition-[background,transform,box-shadow] duration-[0.18s,0.16s,0.18s] hover:-translate-y-px hover:bg-green-hover hover:shadow-[0_4px_12px_oklch(48%_0.120_148_/_0.28)] active:scale-[0.97]"
-        >
-          {saved ? "Saved" : "Save changes"}
-        </button>
-      </div>
+      <section className="bg-bg-card border border-border rounded-[var(--radius-lg)] p-[28px]">
+        <Eyebrow icon={ShieldCheckIcon}>Account</Eyebrow>
+
+        <div className="mt-4 flex items-end justify-between gap-6 flex-wrap">
+          <div className="min-w-0">
+            <div className="font-heading text-[22px] tracking-[-0.015em] leading-[1.15] text-text">
+              Session
+            </div>
+            <p className="text-[13px] text-text-mid mt-1">
+              Sign out of this workspace on this device.
+            </p>
+          </div>
+          <form action={logout}>
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-[11px] rounded-[var(--radius)] border border-border-mid text-[13px] font-medium text-text no-underline hover:border-text-mid hover:bg-bg-alt/50 transition-[border-color,background] duration-150 cursor-pointer"
+            >
+              Sign out
+            </button>
+          </form>
+        </div>
+      </section>
     </div>
   );
 }

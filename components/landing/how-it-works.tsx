@@ -1,49 +1,70 @@
-import { cn } from "@/lib/utils";
-
-import { DocIcon, InvoiceIcon, LinkIcon } from "./icons";
-
-const steps = [
-  {
-    n: "01",
-    icon: <DocIcon size={20} />,
-    title: "Define your scope",
-    desc: "Add deliverables with titles, descriptions, and prices. Group related items, add notes, and set your terms. Takes five minutes.",
-  },
-  {
-    n: "02",
-    icon: <LinkIcon size={20} />,
-    title: "Send a magic link",
-    desc: "Share a clean approval page with your client. No account, no login, no friction. They click, review, and decide on each item.",
-  },
-  {
-    n: "03",
-    icon: <InvoiceIcon size={20} />,
-    title: "Get paid for what was agreed",
-    desc: "Approved items auto-populate a PDF invoice in one click. Every decision is logged. No disputes, no forgotten scope.",
-  },
-];
-
 export function HowItWorks() {
-  return (
-    <div className="bg-bg-dark max-w-full mx-0 p-0" id="how">
-      <div className="max-w-[1280px] mx-auto py-24 px-20 max-[960px]:py-16 max-[960px]:px-6">
-        <div className="text-[11px] font-semibold tracking-[0.12em] uppercase text-text-inv-mid mb-4 reveal">How it works</div>
-        <h2 className="font-heading text-[clamp(32px,3vw,48px)] leading-[1.12] tracking-[-0.02em] text-text-inv max-w-[600px] reveal">Three steps from chaos to clarity.</h2>
-        <p className="text-[17px] text-[oklch(68%_0.010_90)] leading-[1.6] max-w-[520px] mt-3 reveal">No setup, no onboarding session, no integrations required.</p>
+  const steps = [
+    {
+      num: "01",
+      title: "Compose",
+      desc: "Start blank or from a template. Add line items, prices, and short notes. Save common clauses for next time.",
+    },
+    {
+      num: "02",
+      title: "Send for sign-off",
+      desc: "Your client opens a clean page. They approve, decline, or counter each line — no account required, no pdf shuffling.",
+    },
+    {
+      num: "03",
+      title: "Keep the record",
+      desc: "Every yes, every change order, every \"not now\" lives in one signed trail. The receipt you can point at when memory fails.",
+    },
+  ];
 
-        <div className="grid grid-cols-3 gap-px mt-14 bg-border-dark rounded-[var(--radius-lg)] overflow-hidden border border-border-dark max-[960px]:grid-cols-1 reveal">
+  return (
+    <section
+      className="py-20 sm:py-[120px]"
+      id="how"
+      style={{ background: "var(--forest)", color: "oklch(98% 0.008 80)" }}
+    >
+      <div className="mx-auto max-w-[1180px] px-[22px] sm:px-10 lg:px-14">
+        <div className="reveal grid gap-5 md:grid-cols-2 md:gap-14 md:items-end mb-10">
+          <div>
+            <span className="inline-flex items-center gap-2.5 text-xs font-medium tracking-[0.14em] text-[oklch(72%_0.014_80)] uppercase">
+              <span className="size-[6px] rounded-full" style={{ background: "var(--clay)" }} />
+              How it works
+            </span>
+            <h2 className="mt-3 max-w-[14ch] font-[family-name:var(--font-serif)] text-[clamp(34px,5.4vw,64px)] leading-[1.02] font-normal tracking-[-0.02em] text-white [text-wrap:balance]">
+              Three steps. <em className="italic" style={{ color: "var(--clay-soft)" }}>That&rsquo;s it.</em>
+            </h2>
+          </div>
+          <p className="max-w-[44ch] text-[16px] leading-relaxed" style={{ color: "oklch(86% 0.014 80)" }}>
+            No onboarding video. No tour. Open the app, write down what you&rsquo;re doing, send it. The whole thing is built to be used in under two minutes.
+          </p>
+        </div>
+
+        <div
+          className="reveal-stagger grid gap-px overflow-hidden rounded-[20px] border sm:grid-cols-3"
+          style={{ background: "var(--border-dark)", borderColor: "var(--border-dark)" }}
+        >
           {steps.map((step) => (
-            <div key={step.n} className="bg-bg-dark py-10 px-9 flex flex-col gap-5 transition-colors duration-200 hover:bg-[oklch(26%_0.020_148)]">
-              <div className="font-heading text-5xl text-[oklch(34%_0.025_148)] leading-none">{step.n}</div>
-              <div className="w-11 h-11 rounded-xl bg-[oklch(30%_0.030_148)] flex items-center justify-center" style={{ color: "var(--text-inv-mid)" }}>
-                {step.icon}
-              </div>
-              <div className="text-lg font-semibold text-text-inv tracking-[-0.01em]">{step.title}</div>
-              <div className="text-sm leading-[1.65] text-[oklch(65%_0.012_120)]">{step.desc}</div>
-            </div>
+            <article
+              key={step.num}
+              className="flex flex-col gap-3.5 p-7 pb-8 transition-colors duration-[250ms] hover:bg-[var(--forest-2)]"
+              style={{ background: "var(--forest)" }}
+            >
+              <span
+                className="font-[family-name:var(--font-serif)] text-[56px] italic leading-none tracking-[-0.02em]"
+                style={{ color: "var(--clay-soft)" }}
+              >
+                {step.num}
+              </span>
+              <h4 className="font-[family-name:var(--font-serif)] text-2xl leading-[1.2] font-normal tracking-[-0.01em] text-white">
+                {step.title}
+              </h4>
+              <p className="text-[15.5px] leading-relaxed" style={{ color: "oklch(86% 0.014 80)", textWrap: "pretty" }}>
+                {step.desc}
+              </p>
+            </article>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

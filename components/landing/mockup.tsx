@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -101,11 +101,6 @@ function MockupItem({
 export function HeroMockup() {
   const [statuses, setStatuses] = useState<Statuses>({ 1: "approved", 2: null, 3: null, 4: null });
   const [submitted, setSubmitted] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const setStatus = (id: number, value: Status) => setStatuses((current) => ({ ...current, [id]: value }));
   const totalApproved = scopeItems
@@ -152,7 +147,7 @@ export function HeroMockup() {
       className={cn(
         "w-full max-w-[520px] bg-bg-card rounded-[var(--radius-lg)] border border-border shadow-[var(--shadow-lg)] overflow-hidden",
         "opacity-0 translate-y-2 scale-[0.97]",
-        mounted && "animate-[mockupEnter_500ms_cubic-bezier(0.16,1,0.3,1)_forwards]",
+        "animate-[mockupEnter_500ms_cubic-bezier(0.16,1,0.3,1)_forwards]",
       )}
     >
       <div className="flex items-center py-[14px] px-5 bg-bg-alt border-b border-border gap-2">

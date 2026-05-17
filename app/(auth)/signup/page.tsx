@@ -62,7 +62,7 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={pending}
-          className="mt-1 min-h-[46px] w-full rounded-[var(--radius)] border border-transparent bg-green px-[26px] py-[13px] text-[15px] font-medium leading-none text-white shadow-[0_1px_3px_oklch(22%_0.014_60_/_0.12)] transition-[background,transform,box-shadow] duration-[0.18s,0.16s,0.18s] hover:-translate-y-px hover:bg-green-hover hover:shadow-[0_4px_12px_oklch(48%_0.120_148_/_0.28)] active:scale-[0.97] disabled:bg-border-mid disabled:text-text-soft disabled:cursor-default disabled:hover:translate-y-0"
+          className="mt-1 min-h-[46px] w-full rounded-[var(--radius)] border border-transparent bg-green px-[26px] py-[13px] text-[15px] font-medium leading-none text-white shadow-[0_1px_3px_oklch(22%_0.014_60_/_0.12)] transition-[background,transform,box-shadow] duration-[0.18s,0.16s,0.18s] hover:bg-green-hover hover:shadow-[0_4px_12px_oklch(48%_0.120_148_/_0.28)] active:scale-[0.97] disabled:bg-border-mid disabled:text-text-soft disabled:cursor-default"
         >
           {pending ? "Creating account..." : "Sign up"}
         </button>

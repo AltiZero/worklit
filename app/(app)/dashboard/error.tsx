@@ -30,7 +30,7 @@ export default function DashboardError({
         </p>
         <button
           onClick={reset}
-          className="min-h-[44px] rounded-[var(--radius)] border border-transparent bg-green px-6 py-[11px] text-[14px] font-medium leading-none text-white shadow-[0_1px_3px_oklch(20%_0.012_60_/_0.04)] transition-[background,transform,box-shadow] duration-[0.18s,0.16s,0.18s] hover:-translate-y-px hover:bg-green-hover hover:shadow-[0_4px_12px_oklch(50%_0.13_152_/_0.28)] active:scale-[0.97]"
+          className="min-h-[44px] rounded-[var(--radius)] border border-transparent bg-green px-6 py-[11px] text-[14px] font-medium leading-none text-white shadow-[0_1px_3px_oklch(20%_0.012_60_/_0.04)] transition-[background,transform,box-shadow] duration-[0.18s,0.16s,0.18s] hover:bg-green-hover hover:shadow-[0_4px_12px_oklch(50%_0.13_152_/_0.28)] active:scale-[0.97]"
         >
           Try again
         </button>

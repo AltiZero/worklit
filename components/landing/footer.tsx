@@ -1,38 +1,63 @@
 export function Footer() {
   return (
-    <footer className="bg-[oklch(20%_0.020_148)] pt-14 pb-10 px-20 max-[960px]:pt-12 max-[960px]:pb-8 max-[960px]:px-6">
-      <div className="max-w-[1280px] mx-auto">
-        <div className="flex justify-between items-start pb-10 border-b border-border-dark gap-12 max-[960px]:flex-col">
-          <div className="max-w-[280px]">
-            <a href="#" className="flex items-center gap-2 font-semibold text-base text-text-inv no-underline mb-3">
-              <div className="w-[26px] h-[26px] rounded-[7px] bg-green flex items-center justify-center">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M2 7.5L5.5 11L12 3.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <footer
+      className="border-t pb-10 pt-10"
+      style={{ background: "var(--forest-2)", borderColor: "var(--border-dark)", color: "oklch(72% 0.014 80)" }}
+    >
+      <div className="mx-auto max-w-[1180px] px-[22px] sm:px-10 lg:px-14">
+        <div className="grid gap-6 text-[14px] md:grid-cols-[2fr_1fr_1fr_1fr] md:gap-10">
+          <div className="mb-3 md:mb-0">
+            <a
+              className="mb-3 inline-flex items-center gap-2.5 font-[family-name:var(--font-serif)] text-[26px] italic leading-none text-white tracking-[-0.01em]"
+              href="#"
+            >
+              <span
+                className="inline-flex size-[30px] items-center justify-center rounded-lg bg-white"
+                style={{ color: "var(--forest-2)" }}
+                aria-hidden="true"
+              >
+                <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7.5L5.5 11L12 3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </div>
-              Worklit
+              </span>
+              worklit
             </a>
-            <p className="text-[13px] text-[oklch(56%_0.014_130)] leading-[1.6]">Scope approval for freelancers who want to get paid for what they agreed to.</p>
-            <p className="mt-4 text-xs text-[oklch(42%_0.016_140)] italic">Built for freelancers, by freelancers.</p>
+            <p className="mt-3 max-w-[32ch] leading-relaxed text-[oklch(72%_0.014_80)]">
+              A scope-approval tool for freelancers who&rsquo;d rather get paid than argue.
+            </p>
           </div>
-          <div className="flex gap-16 max-[960px]:flex-wrap max-[960px]:gap-8">
-            <div className="flex flex-col gap-3">
-              <div className="text-xs font-semibold tracking-[0.08em] uppercase text-[oklch(48%_0.018_140)] mb-1">Product</div>
-              <a href="#how" className="text-[13px] text-[oklch(58%_0.014_130)] no-underline transition-colors duration-150 hover:text-text-inv">How it works</a>
-              <a href="#features" className="text-[13px] text-[oklch(58%_0.014_130)] no-underline transition-colors duration-150 hover:text-text-inv">Features</a>
-              <a href="#pricing" className="text-[13px] text-[oklch(58%_0.014_130)] no-underline transition-colors duration-150 hover:text-text-inv">Pricing</a>
-            </div>
-            <div className="flex flex-col gap-3">
-              <div className="text-xs font-semibold tracking-[0.08em] uppercase text-[oklch(48%_0.018_140)] mb-1">Company</div>
-              <a href="#" className="text-[13px] text-[oklch(58%_0.014_130)] no-underline transition-colors duration-150 hover:text-text-inv">Blog</a>
-              <a href="#" className="text-[13px] text-[oklch(58%_0.014_130)] no-underline transition-colors duration-150 hover:text-text-inv">Contact</a>
-              <a href="#" className="text-[13px] text-[oklch(58%_0.014_130)] no-underline transition-colors duration-150 hover:text-text-inv">Privacy</a>
-            </div>
+
+          <div>
+            <h5 className="mb-3.5 text-xs font-medium tracking-[0.14em] text-white uppercase">Product</h5>
+            <a href="#product" className="block py-1.5 transition-colors hover:text-white">Features</a>
+            <a href="#how" className="block py-1.5 transition-colors hover:text-white">How it works</a>
+            <a href="#pricing" className="block py-1.5 transition-colors hover:text-white">Pricing</a>
+            <a href="#" className="block py-1.5 transition-colors hover:text-white">Changelog</a>
+          </div>
+
+          <div>
+            <h5 className="mb-3.5 text-xs font-medium tracking-[0.14em] text-white uppercase">Resources</h5>
+            <a href="#" className="block py-1.5 transition-colors hover:text-white">Field guide</a>
+            <a href="#" className="block py-1.5 transition-colors hover:text-white">Templates</a>
+            <a href="#" className="block py-1.5 transition-colors hover:text-white">Help & docs</a>
+            <a href="#" className="block py-1.5 transition-colors hover:text-white">Contact</a>
+          </div>
+
+          <div>
+            <h5 className="mb-3.5 text-xs font-medium tracking-[0.14em] text-white uppercase">Company</h5>
+            <a href="#" className="block py-1.5 transition-colors hover:text-white">About</a>
+            <a href="#" className="block py-1.5 transition-colors hover:text-white">Privacy</a>
+            <a href="#" className="block py-1.5 transition-colors hover:text-white">Terms</a>
+            <a href="#" className="block py-1.5 transition-colors hover:text-white">hello@worklit.co</a>
           </div>
         </div>
-        <div className="flex justify-between items-center pt-7 text-xs text-[oklch(40%_0.014_140)] max-[960px]:flex-col max-[960px]:gap-2 max-[960px]:text-center">
-          <span>© 2026 Worklit. All rights reserved.</span>
-          <span>worklit.app</span>
+
+        <div
+          className="mt-10 flex flex-wrap justify-between gap-3 border-t pt-6 text-[13px]"
+          style={{ borderColor: "var(--border-dark)", color: "oklch(72% 0.014 80)" }}
+        >
+          <span>© 2026 Worklit. Built quietly in Oregon.</span>
+          <span>Made for freelancers, not enterprises.</span>
         </div>
       </div>
     </footer>
