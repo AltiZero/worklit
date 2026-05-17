@@ -167,7 +167,7 @@ export function Sidebar({ initials, email, collapsed }: { initials: string; emai
   return (
     <>
       {/* Mobile top bar */}
-      <div className="hidden max-[960px]:flex items-center justify-between h-14 px-5 bg-bg-card border-b border-border">
+      <div className="hidden max-[960px]:flex items-center justify-between h-14 px-5 bg-bg-card border-b border-border print:hidden">
         <Link href="/dashboard" className="flex items-center gap-2.5 font-semibold text-base tracking-[-0.3px] no-underline text-text">
           <BrandMark />
           Worklit
@@ -200,7 +200,7 @@ export function Sidebar({ initials, email, collapsed }: { initials: string; emai
       {/* Mobile overlay + drawer */}
       <div
         className={cn(
-          "hidden max-[960px]:fixed max-[960px]:block inset-0 z-40 bg-[oklch(15%_0.018_50_/_0.22)] transition-opacity duration-200 ease-out",
+          "hidden max-[960px]:fixed max-[960px]:block inset-0 z-40 bg-[oklch(15%_0.018_50_/_0.22)] transition-opacity duration-200 ease-out print:hidden",
           open ? "opacity-100" : "opacity-0 pointer-events-none",
         )}
         onClick={close}
@@ -210,7 +210,7 @@ export function Sidebar({ initials, email, collapsed }: { initials: string; emai
         aria-hidden={!open}
         inert={!open}
         className={cn(
-          "hidden max-[960px]:fixed max-[960px]:flex top-0 left-0 bottom-0 z-50 w-[300px] max-w-[calc(100vw-28px)] bg-bg-card border-r border-border flex-col gap-3 pt-3 pb-[14px] overflow-y-auto shadow-[0_28px_60px_-24px_oklch(15%_0.018_50_/_0.28)] transition-transform duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
+          "hidden max-[960px]:fixed max-[960px]:flex top-0 left-0 bottom-0 z-50 w-[300px] max-w-[calc(100vw-28px)] bg-bg-card border-r border-border flex-col gap-3 pt-3 pb-[14px] overflow-y-auto shadow-[0_28px_60px_-24px_oklch(15%_0.018_50_/_0.28)] transition-transform duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)] print:hidden",
           open ? "translate-x-0" : "-translate-x-full pointer-events-none",
         )}
       >
@@ -237,7 +237,7 @@ export function Sidebar({ initials, email, collapsed }: { initials: string; emai
       {/* Desktop sidebar */}
       <aside
         className={cn(
-          "bg-bg flex flex-col gap-3 pt-3 pb-3 flex-shrink-0 sticky top-0 h-screen overflow-y-auto transition-[width] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-[960px]:hidden",
+          "bg-bg flex flex-col gap-3 pt-3 pb-3 flex-shrink-0 sticky top-0 h-screen overflow-y-auto transition-[width] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-[960px]:hidden print:hidden",
           collapsed ? "w-[60px]" : "w-[240px]",
         )}
       >

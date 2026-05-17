@@ -36,7 +36,7 @@ function Breadcrumbs({
       {segments.map((seg, i) => {
         const href = "/" + segments.slice(0, i + 1).join("/");
         const prev = segments[i - 1];
-        const projectName = prev === "projects" && UUID_RE.test(seg) ? projectTitles[seg] : undefined;
+        const projectName = (prev === "projects" || prev === "invoices") && UUID_RE.test(seg) ? projectTitles[seg] : undefined;
         const label =
           projectName ??
           crumbLabels[seg] ??
@@ -80,7 +80,7 @@ export function AppLayoutClient({
 
   return (
     <div
-      className="min-h-screen bg-bg grid max-[960px]:flex max-[960px]:flex-col transition-[grid-template-columns] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]"
+      className="min-h-screen bg-bg grid max-[960px]:flex max-[960px]:flex-col transition-[grid-template-columns] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] print:block print:bg-bg-card"
       style={{ gridTemplateColumns: collapsed ? "60px 1fr" : "240px 1fr" }}
     >
       <Sidebar
@@ -90,10 +90,10 @@ export function AppLayoutClient({
       />
 
       {/* Inset panel that holds the top bar + page content */}
-      <div className="min-w-0 py-3 pr-3 max-[960px]:p-0">
-        <div className="min-h-[calc(100vh-1.5rem)] bg-bg-card border border-border rounded-[var(--radius-lg)] flex flex-col overflow-hidden max-[960px]:rounded-none max-[960px]:border-x-0 max-[960px]:border-t-0 max-[960px]:min-h-0">
+      <div className="min-w-0 py-3 pr-3 max-[960px]:p-0 print:p-0">
+        <div className="min-h-[calc(100vh-1.5rem)] bg-bg-card border border-border rounded-[var(--radius-lg)] flex flex-col overflow-hidden max-[960px]:rounded-none max-[960px]:border-x-0 max-[960px]:border-t-0 max-[960px]:min-h-0 print:min-h-0 print:border-0 print:rounded-none">
           {/* Top bar: toggle + breadcrumbs (inside the panel) */}
-          <div className="flex items-center gap-0.5 h-11 p-[5px] border-b border-border flex-shrink-0 max-[960px]:h-12 max-[960px]:gap-2 max-[960px]:px-5 max-[960px]:py-1.5">
+          <div className="flex items-center gap-0.5 h-11 p-[5px] border-b border-border flex-shrink-0 max-[960px]:h-12 max-[960px]:gap-2 max-[960px]:px-5 max-[960px]:py-1.5 print:hidden">
             <button
               onClick={() => setCollapsed((v) => !v)}
               className="w-[34px] h-[34px] rounded-md bg-transparent border-none cursor-pointer inline-flex items-center justify-center text-text-soft hover:bg-bg-alt hover:text-text transition-[background,color] duration-[0.1s] flex-shrink-0 max-[960px]:hidden"
@@ -121,7 +121,7 @@ export function AppLayoutClient({
             </div>
           </div>
 
-          <main className="flex-1 p-[28px] flex flex-col gap-[18px] min-w-0 max-[960px]:p-[22px]">
+          <main className="flex-1 p-[28px] flex flex-col gap-[18px] min-w-0 max-[960px]:p-[22px] print:p-0">
             {children}
           </main>
         </div>
