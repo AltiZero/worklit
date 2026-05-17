@@ -19,7 +19,8 @@ function Eyebrow({ icon: Icon, children }: { icon: EyebrowIcon; children: React.
 }
 
 export async function AwaitingLongest({ userId }: { userId: string }) {
-  const sevenDaysAgo = new Date(Date.now() - 7 * 86_400_000);
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 86_400_000);
 
   const items = await prisma.scopeItem.findMany({
     where: {
@@ -49,7 +50,7 @@ export async function AwaitingLongest({ userId }: { userId: string }) {
       </div>
       <div className="bg-bg-card border border-border rounded-[var(--radius-lg)] overflow-hidden">
         {items.map((item, i) => {
-          const days = Math.floor((Date.now() - item.updatedAt.getTime()) / 86_400_000);
+          const days = Math.floor((now.getTime() - item.updatedAt.getTime()) / 86_400_000);
           const isLast = i === items.length - 1;
           return (
             <Link

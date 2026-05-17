@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { PlusIcon } from "@heroicons/react/16/solid";
 
 import { addScopeItem, type ScopeItemState } from "@/app/actions/scope-items";
@@ -9,16 +9,19 @@ const initialState: ScopeItemState = {};
 
 export function AddItemForm({ projectId }: { projectId: string }) {
   const [open, setOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const [state, setState] = useState<ScopeItemState>(initialState);
+  const [pending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
-  const [state, formAction, pending] = useActionState(
-    addScopeItem.bind(null, projectId),
-    initialState,
-  );
 
   if (!open) {
     return (
       <button
-        onClick={() => setOpen(true)}
+        type="button"
+        onClick={() => {
+          setShowMessage(false);
+          setOpen(true);
+        }}
         className="w-full bg-transparent border border-dashed border-border rounded-[var(--radius-lg)] px-5 py-[18px] flex items-center justify-center gap-2 text-[13.5px] font-medium text-text-mid cursor-pointer hover:border-green-mid hover:text-green hover:bg-green-light/25 transition-[border-color,color,background] duration-150"
       >
         <PlusIcon className="w-4 h-4" />
@@ -30,10 +33,16 @@ export function AddItemForm({ projectId }: { projectId: string }) {
   return (
     <form
       ref={formRef}
-      action={async (fd) => {
-        await formAction(fd);
-        formRef.current?.reset();
-        setOpen(false);
+      action={(fd) => {
+        setShowMessage(true);
+        startTransition(async () => {
+          const result = await addScopeItem(projectId, initialState, fd);
+          setState(result);
+          if (result.success) {
+            formRef.current?.reset();
+            setOpen(false);
+          }
+        });
       }}
       className="bg-bg-card border border-border rounded-[var(--radius-lg)] p-[22px] animate-[itemEnter_200ms_ease-out]"
     >
@@ -81,7 +90,7 @@ export function AddItemForm({ projectId }: { projectId: string }) {
         </div>
       </div>
 
-      {state.message && (
+      {showMessage && state.message && (
         <p className="mt-3 text-[13px] leading-[1.5] text-text-soft bg-bg-alt rounded-[var(--radius)] px-4 py-3 border border-border-mid">
           {state.message}
         </p>
@@ -97,7 +106,10 @@ export function AddItemForm({ projectId }: { projectId: string }) {
         </button>
         <button
           type="button"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setShowMessage(false);
+            setOpen(false);
+          }}
           className="text-[13px] font-medium text-text-mid bg-transparent border-none cursor-pointer hover:text-text transition-colors duration-150"
         >
           Cancel

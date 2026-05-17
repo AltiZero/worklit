@@ -19,7 +19,8 @@ function Eyebrow({ icon: Icon, children }: { icon: EyebrowIcon; children: React.
 }
 
 export async function StaleProjects({ userId }: { userId: string }) {
-  const fourteenDaysAgo = new Date(Date.now() - 14 * 86_400_000);
+  const now = new Date();
+  const fourteenDaysAgo = new Date(now.getTime() - 14 * 86_400_000);
 
   const projects = await prisma.project.findMany({
     where: {
@@ -44,7 +45,7 @@ export async function StaleProjects({ userId }: { userId: string }) {
       </p>
       <div className="bg-bg-card border border-border rounded-[var(--radius-lg)] overflow-hidden">
         {projects.map((p, i) => {
-          const days = Math.floor((Date.now() - p.updatedAt.getTime()) / 86_400_000);
+          const days = Math.floor((now.getTime() - p.updatedAt.getTime()) / 86_400_000);
           const value = p.scopeItems.reduce((sum, s) => sum + Number(s.price), 0);
           const isLast = i === projects.length - 1;
           return (

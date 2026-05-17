@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import {
   EllipsisHorizontalIcon,
   PencilSquareIcon,
@@ -27,12 +27,10 @@ export function EditProject({
   const [editing, setEditing] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const [state, setState] = useState<ProjectState>(updateInitial);
+  const [pending, startTransition] = useTransition();
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const [state, formAction, pending] = useActionState(
-    updateProject.bind(null, projectId),
-    updateInitial,
-  );
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -50,7 +48,17 @@ export function EditProject({
         <div className="text-[11px] font-semibold tracking-[0.14em] uppercase text-text-soft mb-3">
           Editing project
         </div>
-        <form action={formAction} className="flex flex-col gap-4 max-w-[640px]">
+        <form
+          action={(fd) => {
+            setShowMessage(true);
+            startTransition(async () => {
+              const result = await updateProject(projectId, updateInitial, fd);
+              setState(result);
+              if (result.success) setEditing(false);
+            });
+          }}
+          className="flex flex-col gap-4 max-w-[640px]"
+        >
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="edit-title"
@@ -103,7 +111,7 @@ export function EditProject({
             </div>
           </div>
 
-          {state.message && (
+          {showMessage && state.message && (
             <p className="text-[13px] leading-[1.5] text-text-soft bg-bg-alt rounded-[var(--radius)] px-4 py-3 border border-border-mid">
               {state.message}
             </p>
@@ -119,7 +127,10 @@ export function EditProject({
             </button>
             <button
               type="button"
-              onClick={() => setEditing(false)}
+              onClick={() => {
+                setShowMessage(false);
+                setEditing(false);
+              }}
               className="text-[13px] font-medium text-text-mid bg-transparent border-none cursor-pointer hover:text-text transition-colors duration-150"
             >
               Cancel
@@ -162,6 +173,7 @@ export function EditProject({
             >
               <button
                 onClick={() => {
+                  setShowMessage(false);
                   setEditing(true);
                   setMenuOpen(false);
                   setConfirmDelete(false);

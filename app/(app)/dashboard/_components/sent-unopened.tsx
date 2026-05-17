@@ -15,9 +15,11 @@ function Eyebrow({ icon: Icon, children }: { icon: EyebrowIcon; children: React.
 }
 
 export async function SentUnopened({ userId }: { userId: string }) {
+  const now = new Date();
   const tokens = await prisma.clientToken.findMany({
     where: {
-      usedAt: null,
+      viewedAt: null,
+      revokedAt: null,
       expiresAt: { gt: new Date() },
       project: { userId },
     },
@@ -33,14 +35,14 @@ export async function SentUnopened({ userId }: { userId: string }) {
   return (
     <section>
       <div className="flex items-center justify-between mb-3.5 px-1">
-        <Eyebrow icon={PaperAirplaneIcon}>Sent, not opened</Eyebrow>
+        <Eyebrow icon={PaperAirplaneIcon}>Sent, no response</Eyebrow>
       </div>
       <p className="text-[12.5px] text-text-soft mb-3 px-1">
-        Magic links your clients haven&apos;t clicked yet.
+        Active review links the client has not opened yet.
       </p>
       <div className="bg-bg-card border border-border rounded-[var(--radius-lg)] overflow-hidden">
         {tokens.map((t, i) => {
-          const days = Math.floor((Date.now() - t.createdAt.getTime()) / 86_400_000);
+          const days = Math.floor((now.getTime() - t.createdAt.getTime()) / 86_400_000);
           const isLast = i === tokens.length - 1;
           const sentLabel =
             days === 0 ? "sent today" : `sent ${days} ${days === 1 ? "day" : "days"} ago`;

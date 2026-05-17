@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils";
-
 import { CheckIcon, HistoryIcon, InvoiceIcon, LinkIcon, LockIcon, RefreshIcon } from "./icons";
 
 const features = [
@@ -47,7 +45,7 @@ export function Features() {
       <p className="text-[17px] text-text-mid leading-[1.6] max-w-[520px] mt-3 reveal">No feature bloat. Just what you need to protect your time and income.</p>
 
       <div className="grid grid-cols-3 gap-4 mt-14 max-[960px]:grid-cols-2 max-[600px]:grid-cols-1">
-        {features.map((feature, index) => (
+        {features.map((feature) => (
           <div
             key={feature.title}
             className="reveal bg-bg-card border border-border rounded-[var(--radius-lg)] p-7 flex flex-col gap-3.5 transition-[opacity,transform,border-color,box-shadow] duration-[400ms,200ms,200ms,200ms] ease-out hover:border-green-mid hover:shadow-[var(--shadow-md)] hover:-translate-y-1"

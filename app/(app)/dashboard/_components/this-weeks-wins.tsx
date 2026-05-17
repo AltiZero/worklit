@@ -7,7 +7,8 @@ function fmtMoney(n: number) {
 }
 
 export async function ThisWeeksWins({ userId }: { userId: string }) {
-  const sevenDaysAgo = new Date(Date.now() - 7 * 86_400_000);
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 86_400_000);
 
   const items = await prisma.scopeItem.findMany({
     where: {

@@ -25,8 +25,6 @@ type ClientGroup = {
   email: string;
   projectCount: number;
   totalValue: number;
-  lastProjectTitle: string;
-  lastProjectId: string;
   lastUpdatedAt: Date;
 };
 
@@ -49,8 +47,6 @@ export default async function ClientsPage() {
       existing.totalValue += value;
       if (p.updatedAt > existing.lastUpdatedAt) {
         existing.lastUpdatedAt = p.updatedAt;
-        existing.lastProjectTitle = p.title;
-        existing.lastProjectId = p.id;
       }
     } else {
       clientMap.set(p.clientEmail, {
@@ -58,8 +54,6 @@ export default async function ClientsPage() {
         email: p.clientEmail,
         projectCount: 1,
         totalValue: value,
-        lastProjectTitle: p.title,
-        lastProjectId: p.id,
         lastUpdatedAt: p.updatedAt,
       });
     }
@@ -107,7 +101,7 @@ export default async function ClientsPage() {
               return (
                 <Link
                   key={client.email}
-                  href={`/dashboard/projects/${client.lastProjectId}`}
+                  href={`/dashboard/clients/${encodeURIComponent(client.email)}`}
                   className={`group flex items-center gap-4 px-[22px] py-[15px] no-underline transition-colors duration-100 hover:bg-bg-alt/45 ${
                     isLast ? "" : "border-b border-border"
                   }`}

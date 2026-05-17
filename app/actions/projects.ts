@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/supabase/session";
 
-export type ProjectState = { message?: string };
+export type ProjectState = { message?: string; success?: boolean };
 
 export async function createProject(_prev: ProjectState, formData: FormData): Promise<ProjectState> {
   const user = await requireAuth();
@@ -79,7 +79,7 @@ export async function updateProject(projectId: string, _prev: ProjectState, form
 
   revalidatePath(`/dashboard/projects/${projectId}`);
   revalidatePath("/dashboard");
-  return {};
+  return { success: true };
 }
 
 export async function deleteProject(projectId: string) {

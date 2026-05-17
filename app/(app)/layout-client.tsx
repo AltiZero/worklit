@@ -87,14 +87,13 @@ export function AppLayoutClient({
         initials={initials}
         email={email}
         collapsed={collapsed}
-        onToggle={() => setCollapsed((v) => !v)}
       />
 
       {/* Inset panel that holds the top bar + page content */}
       <div className="min-w-0 py-3 pr-3 max-[960px]:p-0">
         <div className="min-h-[calc(100vh-1.5rem)] bg-bg-card border border-border rounded-[var(--radius-lg)] flex flex-col overflow-hidden max-[960px]:rounded-none max-[960px]:border-x-0 max-[960px]:border-t-0 max-[960px]:min-h-0">
           {/* Top bar: toggle + breadcrumbs (inside the panel) */}
-          <div className="flex items-center gap-0.5 h-11 p-[5px] border-b border-border flex-shrink-0">
+          <div className="flex items-center gap-0.5 h-11 p-[5px] border-b border-border flex-shrink-0 max-[960px]:h-12 max-[960px]:gap-2 max-[960px]:px-5 max-[960px]:py-1.5">
             <button
               onClick={() => setCollapsed((v) => !v)}
               className="w-[34px] h-[34px] rounded-md bg-transparent border-none cursor-pointer inline-flex items-center justify-center text-text-soft hover:bg-bg-alt hover:text-text transition-[background,color] duration-[0.1s] flex-shrink-0 max-[960px]:hidden"
@@ -116,8 +115,8 @@ export function AppLayoutClient({
               </svg>
             </button>
             <div className="w-px h-4 bg-border max-[960px]:hidden" aria-hidden="true" />
-            <Breadcrumbs className="ml-2" projectTitles={projectTitles} />
-            <div className="ml-auto pl-2 pr-2">
+            <Breadcrumbs className="ml-2 min-w-0 overflow-hidden max-[960px]:ml-0" projectTitles={projectTitles} />
+            <div className="ml-auto flex-shrink-0 pl-2 pr-2 max-[960px]:pl-3 max-[960px]:pr-0">
               <SearchPalette projects={searchProjects} />
             </div>
           </div>

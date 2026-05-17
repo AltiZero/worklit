@@ -50,7 +50,7 @@ export async function ReadyToInvoice({ userId }: { userId: string }) {
           return (
             <div
               key={p.id}
-              className={`flex items-center gap-4 px-[22px] py-[15px] ${
+              className={`flex items-center gap-4 px-[22px] py-[15px] max-[640px]:flex-wrap max-[640px]:gap-y-3 ${
                 isLast ? "" : "border-b border-border"
               }`}
             >
@@ -73,9 +73,9 @@ export async function ReadyToInvoice({ userId }: { userId: string }) {
               </div>
               <Link
                 href="/dashboard/invoices"
-                className="inline-flex items-center justify-center px-3 py-[7px] rounded-[var(--radius)] border border-border-mid text-[12px] font-medium text-text no-underline transition-[border-color,background] duration-150 hover:border-text-mid hover:bg-bg-alt/50 flex-shrink-0"
+                className="inline-flex items-center justify-center px-3 py-[7px] rounded-[var(--radius)] border border-border-mid text-[12px] font-medium text-text no-underline transition-[border-color,background] duration-150 hover:border-text-mid hover:bg-bg-alt/50 flex-shrink-0 max-[640px]:ml-[52px]"
               >
-                Generate invoice
+                Open invoices
               </Link>
             </div>
           );

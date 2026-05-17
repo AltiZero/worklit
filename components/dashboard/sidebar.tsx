@@ -12,6 +12,7 @@ import {
   HomeIcon,
   ReceiptPercentIcon,
   UsersIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/16/solid";
 
@@ -147,7 +148,7 @@ function NavItems({ collapsed, onSelect }: { collapsed: boolean; onSelect?: () =
   );
 }
 
-export function Sidebar({ initials, email, collapsed, onToggle }: { initials: string; email: string; collapsed: boolean; onToggle: () => void }) {
+export function Sidebar({ initials, email, collapsed }: { initials: string; email: string; collapsed: boolean }) {
   const [open, setOpen] = useState(false);
 
   const close = useCallback(() => setOpen(false), []);
@@ -172,10 +173,13 @@ export function Sidebar({ initials, email, collapsed, onToggle }: { initials: st
           Worklit
         </Link>
         <button
+          type="button"
           className={cn(
-            "flex flex-col justify-center items-center gap-[5px] w-9 h-9 bg-transparent border-none cursor-pointer p-1 rounded-lg transition-colors duration-150 hover:bg-bg-alt",
+            "flex flex-col justify-center items-center gap-[5px] w-9 h-9 bg-transparent border-none cursor-pointer p-1 rounded-lg transition-colors duration-150 hover:bg-bg-alt active:bg-bg-alt",
           )}
           aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          aria-controls="mobile-dashboard-menu"
           onClick={() => setOpen((v) => !v)}
         >
           <span className={cn(
@@ -196,21 +200,34 @@ export function Sidebar({ initials, email, collapsed, onToggle }: { initials: st
       {/* Mobile overlay + drawer */}
       <div
         className={cn(
-          "hidden max-[960px]:fixed inset-0 z-40 bg-text/30 transition-opacity duration-300",
+          "hidden max-[960px]:fixed max-[960px]:block inset-0 z-40 bg-[oklch(15%_0.018_50_/_0.22)] transition-opacity duration-200 ease-out",
           open ? "opacity-100" : "opacity-0 pointer-events-none",
         )}
         onClick={close}
       />
       <div
+        id="mobile-dashboard-menu"
+        aria-hidden={!open}
+        inert={!open}
         className={cn(
-          "hidden max-[960px]:fixed top-0 left-0 bottom-0 z-50 w-[260px] bg-bg-card border-r border-border flex-col gap-3 pt-[18px] pb-[14px] overflow-y-auto transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
-          open ? "translate-x-0" : "-translate-x-full",
+          "hidden max-[960px]:fixed max-[960px]:flex top-0 left-0 bottom-0 z-50 w-[300px] max-w-[calc(100vw-28px)] bg-bg-card border-r border-border flex-col gap-3 pt-3 pb-[14px] overflow-y-auto shadow-[0_28px_60px_-24px_oklch(15%_0.018_50_/_0.28)] transition-transform duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
+          open ? "translate-x-0" : "-translate-x-full pointer-events-none",
         )}
       >
-        <Link href="/dashboard" onClick={close} className="flex items-center gap-2.5 font-semibold text-base tracking-[-0.3px] no-underline text-text px-3 py-1">
-          <BrandMark />
-          Worklit
-        </Link>
+        <div className="flex items-center justify-between gap-3 px-3 pb-1">
+          <Link href="/dashboard" onClick={close} className="flex items-center gap-2.5 font-semibold text-base tracking-[-0.3px] no-underline text-text py-1">
+            <BrandMark />
+            Worklit
+          </Link>
+          <button
+            type="button"
+            onClick={close}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-bg-card text-text-soft transition-[background,color,border-color] duration-150 hover:bg-bg-alt hover:text-text active:bg-bg-alt"
+            aria-label="Close menu"
+          >
+            <XMarkIcon className="h-4 w-4 stroke-[1.8]" aria-hidden="true" />
+          </button>
+        </div>
         <NavItems collapsed={false} onSelect={close} />
         <div className="mt-auto mx-2">
           <UserSection initials={initials} email={email} collapsed={false} />

@@ -1,61 +1,45 @@
-import { cn } from "@/lib/utils";
-
-import { CheckIcon, XIcon } from "./icons";
-
-const beforeItems = [
-  "Email threads nobody can find later",
-  '"I thought that was included"',
-  "Manual invoices assembled from memory",
-  "Work completed before scope was agreed",
-  "Clients pay less than quoted",
-];
-
-const afterItems = [
-  "Every item explicitly approved or rejected",
-  "Signed record of what was agreed",
-  "Invoice writes itself from approved items",
-  "Work starts only after sign-off",
-  "No surprises, no disputes",
-];
-
 export function ProblemSection() {
   return (
-    <section id="problem" className="py-24 px-20 max-w-[1280px] mx-auto max-[960px]:py-16 max-[960px]:px-6">
-      <div className="text-[11px] font-semibold tracking-[0.12em] uppercase text-green mb-4 reveal">The problem</div>
-      <h2 className="font-heading text-[clamp(32px,3vw,48px)] leading-[1.12] tracking-[-0.02em] text-text max-w-[600px] reveal">
-        Scope creep costs freelancers
-        <br />
-        thousands every year.
-      </h2>
-      <p className="text-[17px] text-text-mid leading-[1.6] max-w-[520px] mt-3 reveal">It&apos;s not that clients are bad. It&apos;s that there&apos;s no clear record of what was agreed.</p>
-
-      <div className="grid grid-cols-2 gap-6 mt-14 max-[960px]:grid-cols-1 reveal">
-        <div className="rounded-[var(--radius-lg)] p-9 flex flex-col gap-5 bg-bg-alt border border-border-mid">
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.1em] uppercase py-[5px] px-3 rounded-full w-fit bg-border text-text-mid">Before Worklit</span>
-          <div className="font-heading text-[22px] tracking-[-0.01em] text-text">The old way</div>
-          <div className="flex flex-col gap-2.5">
-            {beforeItems.map((item) => (
-              <div key={item} className="flex items-start gap-2.5 text-sm leading-[1.5] text-text-mid">
-                <span className="flex-shrink-0 mt-0.5">
-                  <XIcon size={14} color="var(--text-soft)" />
-                </span>
-                <span>{item}</span>
-              </div>
-            ))}
+    <section className="py-20 sm:py-[120px] sm:pb-24" id="problem" style={{ background: "oklch(96.5% 0.014 82)" }}>
+      <div className="mx-auto max-w-[1180px] px-[22px] sm:px-10 lg:px-14">
+        <div className="reveal grid gap-6 md:grid-cols-[220px_1fr] md:gap-14">
+          <div>
+            <span className="eyebrow inline-flex items-center gap-2.5 text-xs font-medium tracking-[0.14em] text-[oklch(54%_0.014_60)] uppercase">
+              <span className="dot size-[6px] rounded-full" style={{ background: "var(--clay)" }} />
+              The problem
+            </span>
+          </div>
+          <div>
+            <h2 className="max-w-[22ch] font-[family-name:var(--font-serif)] text-[clamp(34px,5.6vw,64px)] leading-[1.02] font-normal tracking-[-0.02em] text-[oklch(15%_0.018_50)] [text-wrap:balance]">
+              Every freelancer learns this <em className="italic" style={{ color: "var(--clay-deep)" }}>the expensive way</em>.
+            </h2>
+            <p className="mt-5 max-w-[56ch] text-[17px] leading-[1.65] text-[oklch(36%_0.018_55)]">
+              A quick call, a friendly &ldquo;sounds good,&rdquo; a vague brief. Three weeks later the project is half again as large and nobody quite remembers who agreed to what. You eat the difference. Again.
+            </p>
           </div>
         </div>
-        <div className="rounded-[var(--radius-lg)] p-9 flex flex-col gap-5 bg-green-light border border-green-mid">
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.1em] uppercase py-[5px] px-3 rounded-full w-fit bg-green-mid text-green-dark">After Worklit</span>
-          <div className="font-heading text-[22px] tracking-[-0.01em] text-green-dark">The Worklit way</div>
-          <div className="flex flex-col gap-2.5">
-            {afterItems.map((item) => (
-              <div key={item} className="flex items-start gap-2.5 text-sm leading-[1.5] text-[oklch(34%_0.080_148)]">
-                <span className="flex-shrink-0 mt-0.5">
-                  <CheckIcon size={14} color="var(--green)" />
-                </span>
-                <span>{item}</span>
-              </div>
-            ))}
+
+        <div className="reveal-stagger mt-12 grid gap-3.5 sm:grid-cols-2 sm:gap-[18px]">
+          <div className="rounded-[20px] border p-6" style={{ background: "var(--bg-card)", borderColor: "var(--line)" }}>
+            <span className="inline-flex items-center gap-2.5 text-xs font-medium tracking-[0.14em] text-[oklch(54%_0.014_60)] uppercase">
+              <span className="size-[7px] rounded-full bg-[oklch(54%_0.014_60)]" />
+              Before worklit
+            </span>
+            <p className="mt-3.5 font-[family-name:var(--font-serif)] text-[clamp(20px,2.5vw,26px)] leading-[1.25] text-[oklch(36%_0.018_55)] tracking-[-0.005em]">
+              &ldquo;Could you also just&hellip; tweak the homepage? And maybe a quick mobile version? Won&rsquo;t take long, right?&rdquo;
+            </p>
+          </div>
+          <div
+            className="rounded-[20px] border p-6"
+            style={{ background: "var(--green-light)", borderColor: "var(--green-mid)" }}
+          >
+            <span className="inline-flex items-center gap-2.5 text-xs font-medium tracking-[0.14em] uppercase" style={{ color: "var(--clay-deep)" }}>
+              <span className="size-[7px] rounded-full" style={{ background: "var(--clay)" }} />
+              With worklit
+            </span>
+            <p className="mt-3.5 font-[family-name:var(--font-serif)] text-[clamp(20px,2.5vw,26px)] leading-[1.25] text-[oklch(15%_0.018_50)] tracking-[-0.005em]">
+              &ldquo;Adding mobile is a change order — $1,400, signed for, queued behind the current milestone.&rdquo;
+            </p>
           </div>
         </div>
       </div>

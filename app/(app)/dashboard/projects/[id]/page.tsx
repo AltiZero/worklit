@@ -1,20 +1,34 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import {
   CheckIcon,
+  ClockIcon,
   ClipboardDocumentListIcon,
   CurrencyDollarIcon,
   UserIcon,
 } from "@heroicons/react/16/solid";
 
+import type { ClientReviewToken } from "@/app/actions/client-tokens";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/supabase/session";
 import { AddItemForm } from "./add-item-form";
 import { EditProject } from "./edit-project";
+import { ItemActions } from "./item-actions";
+import { SendToClient } from "./send-to-client";
 
 type Props = { params: Promise<{ id: string }> };
 
 function fmtMoney(n: number) {
   return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+}
+
+function fmtDateTime(d: Date) {
+  return d.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }
 
 function statusLabel(status: string) {
@@ -48,6 +62,30 @@ function DetailRow({ label, value }: { label: string; value: React.ReactNode }) 
   );
 }
 
+function serializeToken(token: {
+  token: string;
+  expiresAt: Date;
+  viewedAt: Date | null;
+  lastViewedAt: Date | null;
+  viewCount: number;
+  usedAt: Date | null;
+  submittedAt: Date | null;
+  revokedAt: Date | null;
+  createdAt: Date;
+}): ClientReviewToken {
+  return {
+    token: token.token,
+    expiresAt: token.expiresAt.toISOString(),
+    viewedAt: token.viewedAt?.toISOString() ?? null,
+    lastViewedAt: token.lastViewedAt?.toISOString() ?? null,
+    viewCount: token.viewCount,
+    usedAt: token.usedAt?.toISOString() ?? null,
+    submittedAt: token.submittedAt?.toISOString() ?? null,
+    revokedAt: token.revokedAt?.toISOString() ?? null,
+    createdAt: token.createdAt.toISOString(),
+  };
+}
+
 function ScopeStatusBadge({ status }: { status: string }) {
   if (status === "APPROVED") {
     return (
@@ -75,10 +113,25 @@ function ScopeStatusBadge({ status }: { status: string }) {
 export default async function ProjectDetailPage({ params }: Props) {
   const user = await requireAuth();
   const { id } = await params;
+  const headersList = await headers();
+  const host = headersList.get("x-forwarded-host") ?? headersList.get("host");
+  const protocol = headersList.get("x-forwarded-proto") ?? (host?.startsWith("localhost") ? "http" : "https");
+  const reviewOrigin = host ? `${protocol}://${host}` : "";
+  const now = new Date();
 
   const project = await prisma.project.findUnique({
     where: { id },
-    include: { scopeItems: { orderBy: { createdAt: "asc" } } },
+    include: {
+      clientTokens: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+      },
+      changelog: {
+        orderBy: { createdAt: "desc" },
+        take: 6,
+      },
+      scopeItems: { orderBy: { createdAt: "asc" } },
+    },
   });
 
   if (!project || project.userId !== user.id) {
@@ -93,6 +146,7 @@ export default async function ProjectDetailPage({ params }: Props) {
   const approvedTotal = approvedItems.reduce((sum, item) => sum + Number(item.price), 0);
   const outstandingTotal = pendingItems.reduce((sum, item) => sum + Number(item.price), 0);
   const progress = hasItems ? (approvedItems.length / items.length) * 100 : 0;
+  const latestToken = project.clientTokens[0] ? serializeToken(project.clientTokens[0]) : null;
 
   const summaryPieces: string[] = [project.clientName, statusLabel(project.status)];
   if (hasItems) {
@@ -145,14 +199,14 @@ export default async function ProjectDetailPage({ params }: Props) {
                   return (
                     <div
                       key={item.id}
-                      className={`flex items-center gap-4 px-[22px] py-[15px] ${
+                      className={`flex items-center gap-4 px-[22px] py-[15px] max-[640px]:flex-wrap max-[640px]:items-start max-[640px]:gap-x-3 max-[640px]:gap-y-2 ${
                         isLast ? "" : "border-b border-border"
                       } ${isRejected ? "opacity-55" : ""}`}
                     >
                       <div className="w-8 h-8 rounded-full bg-bg-alt text-text-mid flex items-center justify-center text-[12px] font-semibold flex-shrink-0 tabular-nums">
                         {i + 1}
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 max-[640px]:basis-[calc(100%-44px)]">
                         <div className="text-[14px] font-medium text-text truncate">{item.title}</div>
                         {item.description && (
                           <div className="text-[12px] text-text-soft mt-0.5 truncate">
@@ -161,7 +215,8 @@ export default async function ProjectDetailPage({ params }: Props) {
                         )}
                       </div>
                       <ScopeStatusBadge status={item.status} />
-                      <div className="font-heading text-[16px] text-text leading-none tracking-[-0.01em] tabular-nums w-[90px] text-right flex-shrink-0">
+                      <ItemActions projectId={project.id} itemId={item.id} status={item.status} />
+                      <div className="font-heading text-[16px] text-text leading-none tracking-[-0.01em] tabular-nums w-[90px] text-right flex-shrink-0 max-[640px]:ml-auto max-[640px]:w-auto">
                         {fmtMoney(Number(item.price))}
                       </div>
                     </div>
@@ -236,6 +291,35 @@ export default async function ProjectDetailPage({ params }: Props) {
               <DetailRow label="Status" value={statusLabel(project.status)} />
             </dl>
           </div>
+
+          {hasItems && (
+            <div className="bg-bg-card border border-border rounded-[var(--radius-lg)] p-[22px] flex flex-col gap-4">
+              <Eyebrow icon={ClipboardDocumentListIcon}>Review link</Eyebrow>
+              <SendToClient projectId={project.id} initialToken={latestToken} reviewOrigin={reviewOrigin} initialNow={now.getTime()} />
+            </div>
+          )}
+
+          {project.changelog.length > 0 && (
+            <div className="bg-bg-card border border-border rounded-[var(--radius-lg)] p-[22px] flex flex-col gap-4">
+              <Eyebrow icon={ClockIcon}>Activity</Eyebrow>
+              <div className="flex flex-col gap-3 border-t border-border pt-4">
+                {project.changelog.map((entry) => (
+                  <div key={entry.id} className="grid grid-cols-[8px_1fr] gap-3">
+                    <span className="mt-1.5 h-2 w-2 rounded-full bg-bg-alt border border-border-mid" />
+                    <div className="min-w-0">
+                      <div className="text-[12.5px] font-medium text-text leading-[1.35]">
+                        {entry.action}
+                      </div>
+                      <div className="mt-0.5 text-[11.5px] text-text-soft">
+                        {fmtDateTime(entry.createdAt)}
+                        {entry.actorName ? ` · ${entry.actorName}` : ""}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </aside>
       </div>
     </div>

@@ -3,34 +3,51 @@
 @import "shadcn/tailwind.css";
 
 :root {
-  --bg:           oklch(95%   0.008 100);
-  --bg-alt:       oklch(91%   0.012 100);
-  --bg-card:      oklch(100%  0 0);
-  --bg-dark:      oklch(20%   0.015 148);
+  /* Backgrounds — warm paper, never pure white */
+  --bg:           oklch(96.5% 0.014 82);
+  --bg-alt:       oklch(93%   0.018 80);
+  --bg-card:      oklch(99%   0.006 84);
+  --bg-dark:      oklch(20%   0.026 145);
 
-  --text:         oklch(20%   0.012 60);
-  --text-mid:     oklch(44%   0.008 65);
-  --text-soft:    oklch(62%   0.005 65);
-  --text-inv:     oklch(96%   0.002 100);
-  --text-inv-mid: oklch(69%   0.008 148);
+  /* Text — warm ink, never pure black */
+  --text:         oklch(15%   0.018 50);
+  --text-mid:     oklch(36%   0.018 55);
+  --text-soft:    oklch(54%   0.014 60);
+  --text-inv:     oklch(98%   0.008 80);
+  --text-inv-mid: oklch(72%   0.014 80);
 
-  --green:        oklch(50%   0.130 152);
-  --green-hover:  oklch(44%   0.130 152);
-  --green-light:  oklch(94%   0.035 150);
-  --green-mid:    oklch(86%   0.065 150);
-  --green-dark:   oklch(34%   0.100 150);
+  /* Accent — sage green. Approval, action, and product focus. */
+  --green:        oklch(46%   0.095 152);
+  --green-hover:  oklch(39%   0.085 152);
+  --green-light:  oklch(91%   0.035 142);
+  --green-mid:    oklch(82%   0.040 142);
+  --green-dark:   oklch(31%   0.070 152);
 
-  --border:       oklch(90%   0.006 90);
-  --border-mid:   oklch(84%   0.008 90);
-  --border-dark:  oklch(30%   0.014 148);
+  /* Borders */
+  --border:       oklch(86%   0.020 75);
+  --border-mid:   oklch(74%   0.020 70);
+  --border-dark:  oklch(28%   0.030 145);
 
-  --shadow-sm:    0 1px 3px oklch(20% 0.012 60 / 0.04);
-  --shadow-md:    0 4px 14px oklch(20% 0.012 60 / 0.05), 0 1px 3px oklch(20% 0.012 60 / 0.03);
-  --shadow-lg:    0 14px 40px oklch(20% 0.012 60 / 0.08), 0 4px 10px oklch(20% 0.012 60 / 0.04);
+  /* Shadows — warm-tinted, deeper */
+  --shadow-sm:    0 1px 3px oklch(15% 0.018 50 / 0.04);
+  --shadow-md:    0 4px 14px oklch(15% 0.018 50 / 0.05), 0 1px 3px oklch(15% 0.018 50 / 0.03);
+  --shadow-lg:    0 28px 60px -20px oklch(15% 0.018 50 / 0.22), 0 1px 0 oklch(15% 0.018 50 / 0.04);
 
   --radius:       10px;
   --radius-lg:    16px;
 
+  /* Extended palette */
+  --clay:         oklch(64%   0.135 48);
+  --clay-deep:    oklch(48%   0.120 42);
+  --clay-soft:    oklch(88%   0.052 60);
+  --forest:       var(--bg-dark);
+  --forest-2:     oklch(13%   0.022 145);
+  --paper-2:      var(--bg-alt);
+  --paper-3:      oklch(88%   0.022 78);
+  --line:         var(--border);
+  --line-2:       var(--border-mid);
+
+  /* shadcn/ui mapping */
   --background:   var(--bg);
   --foreground:   var(--text);
   --card:         var(--bg-card);
@@ -51,6 +68,31 @@
   --ring:         var(--green);
 }
 
+.worklit-marketing {
+  --bg-alt:       oklch(93.5% 0.020 78);
+  --bg-card:      oklch(98.4% 0.010 78);
+  --bg-dark:      oklch(18%   0.030 45);
+  --green:        oklch(48%   0.120 42);
+  --green-hover:  oklch(40%   0.110 42);
+  --green-light:  oklch(88%   0.052 60);
+  --green-mid:    oklch(79%   0.055 56);
+  --green-dark:   oklch(38%   0.110 42);
+  --border:       oklch(84%   0.024 72);
+  --border-mid:   oklch(74%   0.026 68);
+  --border-dark:  oklch(28%   0.036 48);
+  --forest:       var(--bg-dark);
+  --forest-2:     oklch(12%   0.024 44);
+  --line:         var(--border);
+  --line-2:       var(--border-mid);
+  --background:   var(--bg);
+  --card:         var(--bg-card);
+  --secondary:    var(--bg-alt);
+  --muted:        var(--bg-alt);
+  --primary:      var(--green);
+  --input:        var(--border-mid);
+  --ring:         var(--green);
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
@@ -61,6 +103,7 @@ body {
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overscroll-behavior: none;
 }
 
 p { text-wrap: pretty; }
@@ -75,6 +118,11 @@ p { text-wrap: pretty; }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes commandPaletteIn {
+  from { opacity: 0; filter: blur(1.5px); transform: translate3d(0, -8px, 0) scale(0.975); }
+  to   { opacity: 1; filter: blur(0); transform: translate3d(0, 0, 0) scale(1); }
 }
 
 @keyframes waitlistEnterForward {
@@ -134,6 +182,21 @@ p { text-wrap: pretty; }
   to   { opacity: 1; transform: scale(1); }
 }
 
+@keyframes heroBgIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scrimIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 4px oklch(64% 0.135 48 / .22); }
+  50%      { box-shadow: 0 0 0 8px oklch(64% 0.135 48 / .05); }
+}
+
 /* ── PAGE-LOAD STAGGER ── */
 
 .animate-in { animation: fadeUp 400ms ease-out forwards; opacity: 0; }
@@ -143,11 +206,97 @@ p { text-wrap: pretty; }
 .delay-4 { animation-delay: 180ms; }
 .delay-5 { animation-delay: 240ms; }
 
+/* ── COMMAND PALETTE ── */
+
+.command-palette-panel {
+  transform-origin: top center;
+  will-change: transform, opacity, filter;
+}
+
 /* ── SCROLL REVEAL (in layer so Tailwind utilities can override transitions) ── */
 
 @layer base {
   .reveal { opacity: 0; transform: translateY(24px); transition: opacity 400ms ease-out, transform 400ms ease-out; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* V4 staggered children */
+  .reveal-stagger > * {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1);
+  }
+  .reveal-stagger.visible > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-stagger.visible > *:nth-child(1) { transition-delay: .00s; }
+  .reveal-stagger.visible > *:nth-child(2) { transition-delay: .10s; }
+  .reveal-stagger.visible > *:nth-child(3) { transition-delay: .20s; }
+  .reveal-stagger.visible > *:nth-child(4) { transition-delay: .30s; }
+  .reveal-stagger.visible > *:nth-child(5) { transition-delay: .40s; }
+  .reveal-stagger.visible > *:nth-child(6) { transition-delay: .50s; }
+}
+
+/* ── MOBILE NAV DRAWER ── */
+
+.drawer {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 40;
+  background: var(--bg-card);
+  transform: translateY(-110%);
+  transition: transform .32s cubic-bezier(.22,1,.36,1);
+  padding-top: 18px;
+  padding-bottom: 28px;
+}
+.drawer.open {
+  transform: translateY(0);
+}
+.drawer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.drawer-close-btn {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  width: 42px;
+  height: 42px;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--text);
+}
+.drawer-link {
+  display: block;
+  padding: 18px 0;
+  font: 400 26px/1.1 var(--font-serif);
+  letter-spacing: -0.01em;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+}
+.drawer-cta {
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font: 500 15px/1 var(--font-sans);
+  padding: 15px 24px;
+  border-radius: 999px;
+  background: var(--text);
+  color: oklch(98% 0.008 80);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .2s, transform .12s;
+}
+.drawer-cta:hover {
+  background: oklch(48% 0.120 42);
 }
 
 /* ── TAILWIND / SHADCN THEME ── */
@@ -193,6 +342,16 @@ p { text-wrap: pretty; }
   --color-border-mid: var(--border-mid);
   --color-border-dark: var(--border-dark);
 
+  --color-clay: var(--clay);
+  --color-clay-deep: var(--clay-deep);
+  --color-clay-soft: var(--clay-soft);
+  --color-forest: var(--forest);
+  --color-forest-2: var(--forest-2);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: var(--radius);
   --radius-lg: var(--radius-lg);
@@ -229,4 +388,3 @@ p { text-wrap: pretty; }
     transform: none;
   }
 }
-

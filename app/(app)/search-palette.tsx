@@ -40,6 +40,7 @@ type ProjectItem = {
 };
 
 type Item = PageItem | ProjectItem;
+type OpenSource = "keyboard" | "pointer";
 
 const PAGES: PageItem[] = [
   { kind: "page", label: "Home", href: "/dashboard", icon: HomeIcon },
@@ -65,13 +66,17 @@ function statusLabel(status: string) {
 function useMac() {
   const [isMac, setIsMac] = useState(false);
   useEffect(() => {
-    setIsMac(/Mac|iPhone|iPad/i.test(navigator.userAgent));
+    const id = window.requestAnimationFrame(() => {
+      setIsMac(/Mac|iPhone|iPad/i.test(navigator.userAgent));
+    });
+    return () => window.cancelAnimationFrame(id);
   }, []);
   return isMac;
 }
 
 export function SearchPalette({ projects }: { projects: SearchProject[] }) {
   const [open, setOpen] = useState(false);
+  const [openSource, setOpenSource] = useState<OpenSource>("keyboard");
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -90,6 +95,7 @@ export function SearchPalette({ projects }: { projects: SearchProject[] }) {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
+        setOpenSource("keyboard");
         setOpen((v) => !v);
       }
     };
@@ -129,11 +135,6 @@ export function SearchPalette({ projects }: { projects: SearchProject[] }) {
     return [...pageMatches, ...projectMatches];
   }, [query, projects]);
 
-  // Reset cursor on query change
-  useEffect(() => {
-    setCursor(0);
-  }, [query]);
-
   // Scroll cursor into view
   useEffect(() => {
     const node = listRef.current?.querySelector<HTMLElement>(`[data-idx="${cursor}"]`);
@@ -171,11 +172,14 @@ export function SearchPalette({ projects }: { projects: SearchProject[] }) {
       {/* Trigger button in the top bar */}
       <button
         type="button"
-        onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 h-[30px] w-[220px] pl-2.5 pr-1.5 rounded-[var(--radius)] border border-border-mid bg-transparent text-[12.5px] text-text-soft hover:text-text hover:border-text-soft transition-[border-color,color] duration-150 cursor-pointer max-[640px]:w-auto"
+        onClick={() => {
+          setOpenSource("pointer");
+          setOpen(true);
+        }}
+        className="inline-flex items-center gap-2 h-[30px] w-[220px] pl-2.5 pr-1.5 rounded-[var(--radius)] border border-border-mid bg-transparent text-[12.5px] text-text-soft hover:text-text hover:border-text-soft transition-[border-color,color,transform] duration-150 cursor-pointer active:scale-[0.98] max-[640px]:h-8 max-[640px]:w-8 max-[640px]:justify-center max-[640px]:gap-0 max-[640px]:p-0"
         aria-label="Open search"
       >
-        <MagnifyingGlassIcon className="w-3.5 h-3.5 stroke-[1.75]" />
+        <MagnifyingGlassIcon className="w-3.5 h-3.5 flex-shrink-0 stroke-[1.75]" />
         <span className="hidden sm:inline">Search</span>
         <kbd className="hidden sm:inline-flex items-center justify-center font-sans tabular-nums text-[10.5px] h-[20px] px-1.5 rounded-[6px] bg-bg-alt border border-border text-text-soft ml-auto">
           {isMac ? "⌘K" : "Ctrl K"}
@@ -185,7 +189,7 @@ export function SearchPalette({ projects }: { projects: SearchProject[] }) {
       {/* Palette overlay */}
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center pt-[14vh] px-4 animate-[fadeUp_180ms_ease-out]"
+          className="fixed inset-0 z-50 flex items-start justify-center pt-[14vh] px-4"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) close();
           }}
@@ -194,14 +198,23 @@ export function SearchPalette({ projects }: { projects: SearchProject[] }) {
             className="absolute inset-0 bg-text/30 backdrop-blur-[2px]"
             onMouseDown={close}
           />
-          <div className="relative w-full max-w-[560px] bg-bg-card border border-border rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] overflow-hidden">
+          <div
+            data-open-source={openSource}
+            className={cn(
+              "command-palette-panel relative w-full max-w-[560px] bg-bg-card border border-border rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] overflow-hidden",
+              openSource === "pointer" && "animate-[commandPaletteIn_450ms_cubic-bezier(0.23,1,0.32,1)_both]",
+            )}
+          >
             <div className="flex items-center gap-2.5 px-[18px] py-[14px] border-b border-border">
               <MagnifyingGlassIcon className="w-4 h-4 stroke-[1.5] text-text-soft flex-shrink-0" />
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setCursor(0);
+                }}
                 onKeyDown={onKeyDown}
                 placeholder="Search projects, pages..."
                 className="flex-1 bg-transparent border-none outline-none text-[15px] text-text placeholder:text-text-soft min-w-0"

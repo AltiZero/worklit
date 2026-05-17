@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/supabase/session";
 import { ArrowIcon, PlusIcon } from "@/components/dashboard/icons";
 
+import { ActionQueue } from "./_components/action-queue";
 import { AwaitingLongest } from "./_components/awaiting-longest";
 import { LatestFromClients } from "./_components/latest-from-clients";
 import { ReadyToInvoice } from "./_components/ready-to-invoice";
@@ -95,13 +96,12 @@ export default async function DashboardPage() {
   const hour = new Date().getHours();
   const greeting = hour < 5 ? "Up late." : hour < 12 ? "Good morning." : hour < 17 ? "Good afternoon." : "Good evening.";
 
-  const hasAttention = pendingItems.length > 0;
   const hasProjects = projects.length > 0;
 
   const summaryLine = !hasProjects
     ? "Let's get your first project shipped."
-    : hasAttention
-      ? `${pendingItems.length} ${pendingItems.length === 1 ? "item is" : "items are"} waiting on you.`
+    : pendingItems.length > 0
+      ? `${pendingItems.length} ${pendingItems.length === 1 ? "item is" : "items are"} still pending approval.`
       : `Nothing pending. ${activeProjectCount || projects.length} active ${(activeProjectCount || projects.length) === 1 ? "project" : "projects"}.`;
 
   const dateLabel = new Date().toLocaleDateString("en-US", {
@@ -132,44 +132,6 @@ export default async function DashboardPage() {
           </Link>
         )}
       </header>
-
-      {/* Attention strip */}
-      {hasAttention && (
-        <section
-          className="grid gap-3"
-          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))" }}
-        >
-          {pendingItems.slice(0, 3).map((item) => (
-            <Link
-              key={item.id}
-              href={`/dashboard/projects/${item.projectId}`}
-              className="group bg-green-light/55 border border-green-mid rounded-[var(--radius-lg)] px-5 py-4 no-underline flex items-center gap-4 transition-[background,box-shadow] duration-200 hover:bg-green-light hover:shadow-[var(--shadow-md)]"
-            >
-              <div className="w-9 h-9 rounded-full bg-green-mid flex items-center justify-center text-[13px] font-semibold text-green-dark flex-shrink-0">
-                {item.clientName[0]?.toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-[11px] font-semibold tracking-[0.1em] uppercase text-green-dark/85">
-                  Pending approval
-                </div>
-                <div className="text-[14px] text-text font-medium mt-0.5 truncate">{item.title}</div>
-                <div className="text-[12px] text-text-mid mt-0.5 truncate">{item.projectTitle}</div>
-              </div>
-              <div className="text-[12px] font-semibold text-green-dark inline-flex items-center gap-1 flex-shrink-0 transition-transform duration-150 group-hover:translate-x-0.5">
-                Review <ArrowIcon size={12} />
-              </div>
-            </Link>
-          ))}
-          {pendingItems.length > 3 && (
-            <Link
-              href="/dashboard/scopes"
-              className="bg-bg-card border border-border border-dashed rounded-[var(--radius-lg)] px-5 py-4 no-underline flex items-center justify-center text-[13px] text-text-mid hover:border-border-mid hover:text-text transition-colors duration-150"
-            >
-              +{pendingItems.length - 3} more pending
-            </Link>
-          )}
-        </section>
-      )}
 
       {!hasProjects ? (
         /* Empty new-user state: full width, with setup guide */
@@ -216,6 +178,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-6">
           {/* LEFT */}
           <div className="flex flex-col gap-7 min-w-0">
+            <ActionQueue userId={user.id} />
             <AwaitingLongest userId={user.id} />
             <ReadyToInvoice userId={user.id} />
 
