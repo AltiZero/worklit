@@ -58,7 +58,7 @@ export default async function InvoicesPage() {
 
   const summaryLine = hasReadyScopes
     ? `${fmtMoney(readyTotal)} ready to bill across ${projects.length} ${projects.length === 1 ? "project" : "projects"}.`
-    : "Invoices will be generated from projects where every item is approved.";
+    : "Approved projects become downloadable invoice PDFs here.";
 
   return (
     <div className="flex flex-col gap-7">
@@ -95,10 +95,10 @@ export default async function InvoicesPage() {
               <Eyebrow icon={CheckCircleIcon}>What this means</Eyebrow>
               <div>
                 <div className="font-heading text-[24px] text-text tracking-[-0.015em] leading-[1.15]">
-                  Approved scope is ready for the invoice system.
+                  Approved scope is ready to send as an invoice.
                 </div>
                 <p className="text-[13px] text-text-mid leading-[1.6] mt-2 max-w-[64ch]">
-                  These projects have no pending, deferred, or rejected items. When invoice generation is added, this is the queue it should use.
+                  Open a draft, review the line items, then download a PDF to send to your client.
                 </p>
               </div>
             </div>
@@ -118,7 +118,7 @@ export default async function InvoicesPage() {
                 return (
                   <Link
                     key={project.id}
-                    href={`/dashboard/projects/${project.id}`}
+                    href={`/dashboard/invoices/${project.id}`}
                     className={`group flex items-center gap-4 px-[22px] py-[15px] no-underline transition-colors duration-100 hover:bg-bg-alt/45 ${
                       isLast ? "" : "border-b border-border"
                     }`}
@@ -138,6 +138,7 @@ export default async function InvoicesPage() {
                       <span className="font-heading text-[17px] text-text leading-none tracking-[-0.01em] tabular-nums">
                         {fmtMoney(total)}
                       </span>
+                      <span className="text-[11px] text-text-soft">View invoice</span>
                     </div>
                     <ArrowIcon size={12} />
                   </Link>
@@ -155,7 +156,7 @@ export default async function InvoicesPage() {
             No invoice-ready scopes yet.
           </div>
           <p className="text-[14px] text-text-mid leading-[1.6] max-w-[400px] mb-6">
-            Get every item in a project approved, and it will appear here as ready to bill.
+            Get every item in a project approved, and a downloadable invoice PDF will appear here.
           </p>
           <Link
             href="/dashboard/projects"
