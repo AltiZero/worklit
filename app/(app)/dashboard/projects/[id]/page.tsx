@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import {
-  CheckIcon,
   ClockIcon,
   ClipboardDocumentListIcon,
   CurrencyDollarIcon,
@@ -13,8 +12,8 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/supabase/session";
 import { AddItemForm } from "./add-item-form";
 import { EditProject } from "./edit-project";
-import { ItemActions } from "./item-actions";
 import { SendToClient } from "./send-to-client";
+import { ScopeItemRow } from "./scope-item-row";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -84,30 +83,6 @@ function serializeToken(token: {
     revokedAt: token.revokedAt?.toISOString() ?? null,
     createdAt: token.createdAt.toISOString(),
   };
-}
-
-function ScopeStatusBadge({ status }: { status: string }) {
-  if (status === "APPROVED") {
-    return (
-      <span className="inline-flex items-center gap-1 text-[11px] font-medium py-[3px] pl-1.5 pr-2 rounded-full bg-green-light text-green-dark border border-green-mid">
-        <CheckIcon className="w-3 h-3" />
-        Approved
-      </span>
-    );
-  }
-  if (status === "PENDING") {
-    return (
-      <span className="inline-flex items-center text-[11px] font-medium py-[3px] px-2 rounded-full bg-bg-alt text-text-mid border border-border-mid">
-        Pending
-      </span>
-    );
-  }
-  const label = status === "REJECTED" ? "Rejected" : status === "DEFERRED" ? "Deferred" : status;
-  return (
-    <span className="inline-flex items-center text-[11px] font-medium py-[3px] px-2 rounded-full bg-bg-alt text-text-soft border border-border-mid opacity-55">
-      {label}
-    </span>
-  );
 }
 
 export default async function ProjectDetailPage({ params }: Props) {
@@ -195,31 +170,20 @@ export default async function ProjectDetailPage({ params }: Props) {
               <div className="bg-bg-card border border-border rounded-[var(--radius-lg)] overflow-hidden">
                 {items.map((item, i) => {
                   const isLast = i === items.length - 1;
-                  const isRejected = item.status === "REJECTED" || item.status === "DEFERRED";
                   return (
-                    <div
+                    <ScopeItemRow
                       key={item.id}
-                      className={`flex items-center gap-4 px-[22px] py-[15px] max-[640px]:flex-wrap max-[640px]:items-start max-[640px]:gap-x-3 max-[640px]:gap-y-2 ${
-                        isLast ? "" : "border-b border-border"
-                      } ${isRejected ? "opacity-55" : ""}`}
-                    >
-                      <div className="w-8 h-8 rounded-full bg-bg-alt text-text-mid flex items-center justify-center text-[12px] font-semibold flex-shrink-0 tabular-nums">
-                        {i + 1}
-                      </div>
-                      <div className="flex-1 min-w-0 max-[640px]:basis-[calc(100%-44px)]">
-                        <div className="text-[14px] font-medium text-text truncate">{item.title}</div>
-                        {item.description && (
-                          <div className="text-[12px] text-text-soft mt-0.5 truncate">
-                            {item.description}
-                          </div>
-                        )}
-                      </div>
-                      <ScopeStatusBadge status={item.status} />
-                      <ItemActions projectId={project.id} itemId={item.id} status={item.status} />
-                      <div className="font-heading text-[16px] text-text leading-none tracking-[-0.01em] tabular-nums w-[90px] text-right flex-shrink-0 max-[640px]:ml-auto max-[640px]:w-auto">
-                        {fmtMoney(Number(item.price))}
-                      </div>
-                    </div>
+                      projectId={project.id}
+                      index={i}
+                      isLast={isLast}
+                      item={{
+                        id: item.id,
+                        title: item.title,
+                        description: item.description,
+                        price: Number(item.price),
+                        status: item.status,
+                      }}
+                    />
                   );
                 })}
               </div>
